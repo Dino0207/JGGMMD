@@ -42,13 +42,13 @@
 
             <div class="hero">
                 <div class="setlist-container">
-                    <div class="setlist-items">
+                    <div class="setlist-items" onclick="window.location.href='setlist.php'">
                     </div>
-                    <div class="setlist-items">
+                    <div class="setlist-items" onclick="window.location.href='setlist.php'">
                     </div>
-                    <div class="setlist-items">
+                    <div class="setlist-items" onclick="window.location.href='setlist.php'">
                     </div>
-                    <div class="setlist-items">
+                    <div class="setlist-items" onclick="window.location.href='setlist.php'">
                     </div>
                 </div>
             </div>

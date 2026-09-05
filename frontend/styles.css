@@ -243,10 +243,11 @@ body {
         .setlist-container {
             padding: 40px;
             display: flex;
-            justify-content: space-evenly;
+            gap: 50px;
+            justify-content: center;
             flex-wrap: wrap;
             align-items: center;
-            align-content: space-around;
+            align-content: center;
             border: 1px solid black;
             width:fit-content;
             box-sizing: border-box;
@@ -258,7 +259,15 @@ body {
                 width: 50vh;
                 padding: 15px;
                 border: 1px solid black;
+                transition: 0.3s ease;
+
+                &:hover {
+                    scale: 1.05;
+                    box-shadow: 0 6px 5px var(--text-color);
+                    transform: translateY(-5px);
+                }
             }
         }
     }
 }
+
