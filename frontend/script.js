@@ -1,4 +1,3 @@
-import ChordSheetJS from 'chordsheetjs';
 
 function showForm(formId) {
     document.querySelectorAll(".form-box").forEach(form => form.classList.remove("active"));
@@ -7,7 +6,7 @@ function showForm(formId) {
 
 function accDrop() {
     document.getElementById("acc-set-items").classList.toggle("show");
-}
+}   
 
 window.onclick = function(event) {
     if (!event.target.matches('.accbtn')) {
@@ -21,5 +20,3 @@ window.onclick = function(event) {
         }
     }
 }
-
-console.log("Script loaded successfully.");

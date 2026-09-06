@@ -19,6 +19,8 @@
         <a href="#">Setlist</a>
         <a href="#">Support</a>
     </nav>
+
+    
     <div class="mbody">
         <div class="profile-cont">
             <h1>Profile</h1>
@@ -40,22 +42,58 @@
                 <h3>Search-bar</h3>
             </div>
 
+            
+ 
+
+            <section class="account-settings">
+                <div class="form-box" id="change-password-form">
+                    <h2>Change Password</h2>
+                    <form>
+                        <label for="current-password">Current Password:</label>
+                        <input type="password" id="current-password" name="current-password" required>
+                        
+                        <label for="new-password">New Password:</label>
+                        <input type="password" id="new-password" name="new-password" required>
+                        
+                        <label for="confirm-password">Confirm New Password:</label>
+                        <input type="password" id="confirm-password" name="confirm-password" required>
+                        
+                        <button type="submit">Change Password</button>
+                    </form>
+                </div>
+
+                <div class="form-box" id="change-email-form">
+                    <h2>Change Email</h2>
+                    <form>
+                        <label for="new-email">New Email:</label>
+                        <input type="email" id="new-email" name="new-email" required>
+                        
+                        <button type="submit">Change Email</button>
+                    </form>
+                </div>
+
             <div class="hero">
                 <div class="setlist-container">
-                    <div class="setlist-items" onclick="window.location.href='setlist.php'">
+                    <div class="setlist-items">
+                        <div class="song-display" id="song-display"></div>
                     </div>
-                    <div class="setlist-items" onclick="window.location.href='setlist.php'">
+                    <div class="setlist-items">
                     </div>
-                    <div class="setlist-items" onclick="window.location.href='setlist.php'">
+                    <div class="setlist-items">
                     </div>
-                    <div class="setlist-items" onclick="window.location.href='setlist.php'">
+                    <div class="setlist-items">
                     </div>
                 </div>
             </div>
         </div>
+
+        
+                       
         
         
-    </div>
+</div>
+    <script src="../node_modules/chordsheetjs/lib/bundle.min.js"></script>
+    <script type="module" src="chords.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
