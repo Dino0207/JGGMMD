@@ -7,6 +7,9 @@ if (isset($_POST['register'])) {
     $email = $_POST['email'];
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $role = ($_POST['Role'] !== 'Singer') ? 'Musician' : 'Singer';
+    $year = $_POST['year'];
+    $section = $_POST['section'];
+
 
     $checkEmailQ = $conn->prepare("SELECT email FROM users WHERE email = ?");
     $checkEmailQ->bind_param('s', $email);
