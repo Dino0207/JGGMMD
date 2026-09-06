@@ -186,7 +186,7 @@ body {
             margin-bottom: 10px;
             transition: 0.3s ease;
 
-            button {
+            a {
                 padding: 12px 16px;
                 display: block;
                 text-decoration: none;
