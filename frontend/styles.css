@@ -1,10 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap");
 
 :root {
-    --primary-color: #724c9d;
+    --primary-color: #9356a0;
     --secondary-color: #b294bd;
     --third-color:#ffbbfc;
-    --background-color: #f1e9f0;
+    --background-color: #dccae9;
     --text-color: rgba(0, 0, 0, 0.8);
 }
 
@@ -68,7 +68,7 @@ body {
     width: 100%;
     max-width: 400px;
     padding: 28px;
-    background: var(--secondary-color);
+    background: white;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
     
@@ -82,7 +82,7 @@ body {
     input,select {
         width: 100%;
         padding: 10px;
-        background: #eee;
+        background: var(--background-color);
         border-radius: 6px;
         border: none;
         outline: none;
@@ -96,6 +96,7 @@ body {
         padding: 10px;
         border-radius: 6px;
         border: none;
+        background: var(--primary-color);
         cursor: pointer;
         font-size: 18px;
         color: var(--text-color);
@@ -147,14 +148,14 @@ body {
 
 
 .profile-cont {
-        position:sticky;
+        position:static;
         top: 0;
         width: 45vh ;
         display: flex;
         flex-direction: column;
-        height: 100vh;
+        height: 120vh;
         padding: 25px;
-        border: 2px solid white;
+        border-right: 1px solid var(--primary-color);
 
         .accbtn {
                 width: 100%;
@@ -219,6 +220,7 @@ body {
 }
 .sbody {
     height: 100vh;
+    min-height: 0;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -247,29 +249,32 @@ body {
     .hero {
         width: 100%;
         display: flex;
-        height: 100vh;
+        flex: 1;
+        min-height: 0;
+        flex-direction: column;
         padding: 30px;
-        border: 2px solid black;
 
         .setlist-container {
-            padding: 40px;
-            display: flex;
             position: relative;
-            gap: 50px;
-            justify-content: center;
-            flex-wrap: wrap;
-            align-items: center;
-            align-content: center;
+            width: 100%;
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-content: flex-start;
             border: 1px solid black;
-            width:fit-content;
             box-sizing: border-box;
-            height: 80vh;
+            background: rgb(255 255 255 / 35%);
 
 
             .setlist-items {
-                height: 30vh;
-                width: 50vh;
+                width: min(100%, 680px);
+                min-height: 150px;
                 padding: 15px;
+                background: white;
                 border: 1px solid black;
                 transition: 0.3s ease;
 
@@ -281,6 +286,156 @@ body {
             }
         }
     }
+}
+
+.setlist-toolbar {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 24px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 14px 24px;
+    background: var(--background-color);
+}
+
+.setlist-toolbar > div {
+    min-width: max-content;
+}
+
+.nav-menu {
+    position: relative;
+}
+
+.nav-menu > button {
+    border: 0;
+    background: transparent;
+    color: whitesmoke;
+    font: inherit;
+    cursor: pointer;
+    padding: 8px 0;
+}
+
+.nav-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 5;
+    display: none;
+    min-width: 150px;
+    padding: 8px;
+    background: white;
+    border: 1px solid var(--primary-color);
+    box-shadow: 0 6px 12px rgb(0 0 0 / 20%);
+}
+
+.nav-dropdown.show {
+    display: grid;
+    gap: 4px;
+}
+
+.nav-dropdown button {
+    border: 0;
+    background: transparent;
+    color: var(--text-color);
+    padding: 9px 12px;
+    text-align: left;
+    cursor: pointer;
+}
+
+.nav-dropdown button:hover {
+    background: var(--secondary-color);
+}
+
+.setlist-toolbar button,
+.setlist-actions button,
+.open-setlist,
+.remove-song {
+    border: 1px solid var(--primary-color);
+    background: white;
+    color: var(--text-color);
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.setlist-toolbar button:hover,
+.setlist-actions button:hover,
+.open-setlist:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.setlist-heading,
+.setlist-song {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.setlist-owner { font-size: 0.85rem; }
+.setlist-songs { display: none; margin: 18px 0; }
+.setlist-items.is-open .setlist-songs { display: grid; gap: 6px; }
+.song-link { border: 0; background: transparent; cursor: pointer; text-align: left; padding: 6px; }
+.song-link:hover { text-decoration: underline; }
+.remove-song { padding: 2px 8px; }
+.empty-setlists { padding: 24px; }
+
+.song-editor {
+    position: fixed;
+    inset: 0;
+    z-index: 9;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: rgb(0 0 0 / 45%);
+}
+
+.song-editor[hidden] {
+    display: none;
+}
+
+.song-editor form {
+    width: min(620px, 100%);
+    max-height: 90vh;
+    overflow-y: auto;
+    display: grid;
+    gap: 8px;
+    padding: 24px;
+    background: white;
+    border: 1px solid var(--text-color);
+}
+
+.song-editor input,
+.song-editor textarea {
+    width: 100%;
+    padding: 9px;
+    border: 1px solid var(--secondary-color);
+    font: inherit;
+}
+
+.song-editor-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.song-editor-actions button {
+    border: 1px solid var(--primary-color);
+    background: var(--primary-color);
+    color: white;
+    padding: 9px 14px;
+    cursor: pointer;
+}
+
+.song-editor-actions button:last-child {
+    background: white;
+    color: var(--text-color);
 }
 
 .song-modal[hidden] {
@@ -344,6 +499,21 @@ body {
     color: var(--text-color);
     text-align: left;
     cursor: pointer;
+}
+
+.song-result {
+    display: flex;
+    width: min(500px, 100%);
+    gap: 6px;
+}
+
+.song-result button:first-child {
+    flex: 1;
+}
+
+.song-result button:last-child {
+    width: auto;
+    white-space: nowrap;
 }
 
 #song-results button:hover {

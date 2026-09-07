@@ -15,8 +15,15 @@
     <nav class="navbar">
         <h2>JGGMMD</h2>
         <a href="#">Home</a>
-        <a href="#">Songs</a>
-        <a href="#">Setlist</a>
+        <div class="nav-menu">
+            <button type="button" id="songs-nav-toggle" aria-expanded="false">Songs</button>
+            <div class="nav-dropdown" id="songs-nav-menu">
+                <button type="button" data-song-action="add">Add song</button>
+                <button type="button" data-song-action="edit">Edit song</button>
+                <button type="button" data-song-action="delete">Delete song</button>
+            </div>
+        </div>
+        <a href="#setlist-container">Setlist</a>
         <a href="#">Support</a>
     </nav>
 
@@ -43,6 +50,25 @@
             </div>
 
             <div id="song-results" aria-live="polite"></div>
+
+            <div class="song-editor" id="song-editor" hidden>
+                <form id="song-editor-form">
+                    <h2 id="song-editor-title">Add song</h2>
+                    <label for="song-id">Song id <span id="song-id-note">(only needed for editing or deleting)</span></label>
+                    <input type="number" id="song-id" min="1">
+                    <label for="song-title">Title</label>
+                    <input type="text" id="song-title" maxlength="100" required>
+                    <label for="song-author">Author</label>
+                    <input type="text" id="song-author" maxlength="100" required>
+                    <label for="song-lyrics">Lyrics</label>
+                    <textarea id="song-lyrics" rows="9" required></textarea>
+                    <div class="song-editor-actions">
+                        <button type="submit" id="song-editor-submit">Save song</button>
+                        <button type="button" id="song-editor-cancel">Cancel</button>
+                    </div>
+                    <p id="song-editor-message" role="status"></p>
+                </form>
+            </div>
 
             <div class="song-modal" id="song-modal" hidden>
                 <div class="song-modal-content" role="dialog" aria-modal="true" aria-labelledby="song-modal-title">
@@ -84,15 +110,14 @@
                 </div>
 
             <div class="hero">
-                <div class="setlist-container">
-                    <div class="setlist-items"></div>
-                    <div class="setlist-items">
+                <div class="setlist-toolbar">
+                    <div>
+                        <h2>My setlists</h2>
+                        <p>Open a setlist to view its songs and lyrics.</p>
                     </div>
-                    <div class="setlist-items">
-                    </div>
-                    <div class="setlist-items">
-                    </div>
+                    <button type="button" id="new-setlist">+ New setlist</button>
                 </div>
+                <div class="setlist-container" id="setlist-container" aria-live="polite"></div>
             </div>
         </div>
 
