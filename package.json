@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "chordsheetjs": "^16.2.2",
-    "node": "^26.8.1"
+    "chordsheetjs": "^16.2.2"
   }
 }
