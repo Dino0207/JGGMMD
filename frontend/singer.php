@@ -25,8 +25,11 @@
         <div class="sbody">
         
             <div class="s-bar">
-                <h3>Search-bar</h3>
+                <label for="song-search">Search songs</label>
+                <input type="search" id="song-search" placeholder="Title or author">
             </div>
+
+            <div id="song-results" aria-live="polite"></div>
 
             <div class="hero">
                 <div class="setlist-container">

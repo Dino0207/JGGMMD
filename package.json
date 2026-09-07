@@ -1,5 +1,26 @@
 {
   "dependencies": {
-    "chordsheetjs": "^16.2.2"
-  }
+    "chordsheetjs": "^16.2.2",
+    "express": "^5.2.1",
+    "mysql2": "^3.24.3"
+  },
+  "name": "jggm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dino0207/JGGMMD.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Dino0207/JGGMMD/issues"
+  },
+  "homepage": "https://github.com/Dino0207/JGGMMD#readme"
 }

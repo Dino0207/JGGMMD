@@ -39,7 +39,18 @@
         <div class="sbody">
         
             <div class="s-bar">
-                <h3>Search-bar</h3>
+                <input type="search" id="song-search" placeholder="Search for Title / Author">
+            </div>
+
+            <div id="song-results" aria-live="polite"></div>
+
+            <div class="song-modal" id="song-modal" hidden>
+                <div class="song-modal-content" role="dialog" aria-modal="true" aria-labelledby="song-modal-title">
+                    <button type="button" class="song-modal-close" id="song-modal-close" aria-label="Close song">&times;</button>
+                    <h2 id="song-modal-title"></h2>
+                    <p id="song-modal-author"></p>
+                    <div class="song-display" id="song-display"></div>
+                </div>
             </div>
 
             
@@ -74,9 +85,7 @@
 
             <div class="hero">
                 <div class="setlist-container">
-                    <div class="setlist-items">
-                        <div class="song-display" id="song-display"></div>
-                    </div>
+                    <div class="setlist-items"></div>
                     <div class="setlist-items">
                     </div>
                     <div class="setlist-items">

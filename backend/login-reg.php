@@ -7,8 +7,8 @@ if (isset($_POST['register'])) {
     $email = $_POST['email'];
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $role = ($_POST['Role'] !== 'Singer') ? 'Musician' : 'Singer';
-    $year = $_POST['year'];
-    $section = $_POST['section'];
+    $year = $_POST['year'].trim();
+    $section = $_POST['section'].trim();
 
 
     $checkEmailQ = $conn->prepare("SELECT email FROM users WHERE email = ?");
@@ -67,6 +67,5 @@ if (isset($_POST['login'])) {
     header("Location: ../frontend/index.php");
     exit();
 }
-
-
+            
 ?>

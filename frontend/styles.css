@@ -224,13 +224,24 @@ body {
     flex-direction: column;
 
     .s-bar{
+        margin-top: 10px;
         height: 8vh;
-        border: 2px solid red;
         width: 100%;
         padding: 20px;
         display: flex;
         justify-content: center;
         align-items: center;
+        
+        input[type="search"] {
+            width: 100%;
+            max-width: 400px;
+            padding: 10px;
+            border-radius: 6px;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            color: var(--text-color);
+        }
     }
 
     .hero {
@@ -270,5 +281,73 @@ body {
             }
         }
     }
+}
+
+.song-modal[hidden] {
+    display: none;
+}
+
+.song-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: rgb(0 0 0 / 65%);
+}
+
+.song-modal-content {
+    position: relative;
+    width: min(760px, 100%);
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 32px;
+    background: white;
+    border: 2px solid var(--text-color);
+    box-shadow: 0 12px 30px rgb(0 0 0 / 30%);
+}
+
+.song-modal-close {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    border: 0;
+    background: transparent;
+    color: var(--text-color);
+    font-size: 28px;
+    cursor: pointer;
+}
+
+#song-modal-title {
+    margin: 0 0 8px;
+    font-size: 2.25rem;
+}
+
+#song-modal-author {
+    margin: 0 0 20px;
+}
+
+#song-results {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 20px;
+}
+
+#song-results button {
+    width: min(500px, 100%);
+    padding: 10px 14px;
+    border: 1px solid var(--text-color);
+    background: white;
+    color: var(--text-color);
+    text-align: left;
+    cursor: pointer;
+}
+
+#song-results button:hover {
+    background: var(--text-color);
+    color: white;
 }
 
