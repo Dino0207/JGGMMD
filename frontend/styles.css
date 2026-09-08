@@ -299,7 +299,8 @@ body {
 .nav-menu {
     margin-left: 18px;
     position: relative;
-    width: 50vh;    
+    width: 50vh;  
+    display: flex;  
 
     button{
         border: 0;

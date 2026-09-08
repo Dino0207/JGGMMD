@@ -18,6 +18,10 @@ if (isset($_POST['register'])) {
         $_SESSION['reg_error'] = 'Email already exist.';
         $_SESSION['active_form'] = 'register';
 
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL, FILTER_SANITIZE_EMAIL)) {
+        $_SESSION['reg_error'] = 'Invalid email format.';
+        $_SESSION['active_form'] = 'register';
+
         } else {
             if ($_POST['password'] !== $_POST['cpassword']) {
                 $_SESSION['pass_error'] = 'Password do not match.';
