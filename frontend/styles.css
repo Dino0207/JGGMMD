@@ -39,19 +39,6 @@ body {
         display: flex;
         justify-content: flex-start;
         }
-    a {
-        text-decoration: none;
-        display: flex;
-        margin-left: 18px;
-        color: whitesmoke;
-        transition: 0.3s;
-    }
-
-    a:hover {
-        background: rgba(165, 164, 165, 0.849);
-        transform:translateY(-5px);
-        text-shadow: 0 6px 5px var(--text-color);
-    }
 }
 
 .container {
@@ -153,7 +140,7 @@ body {
         width: 45vh ;
         display: flex;
         flex-direction: column;
-        height: 120vh;
+        height: 100vh;
         padding: 25px;
         border-right: 1px solid var(--primary-color);
 
@@ -170,7 +157,8 @@ body {
                 transition: 0.5s;
 
                 &:hover, :focus {
-                    background: var(--third-color);
+                    background: var(--primary-color);
+                    color: whitesmoke;
                 }
             }
 
@@ -256,22 +244,22 @@ body {
 
         .setlist-container {
             position: relative;
-            width: 100%;
-            flex: 1;
+            flex-wrap: wrap;
+            width: 100% ;
             min-height: 0;
             overflow-y: auto;
             padding: 24px;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             gap: 20px;
-            align-content: flex-start;
+            align-content: center;
             border: 1px solid black;
             box-sizing: border-box;
             background: rgb(255 255 255 / 35%);
 
 
             .setlist-items {
-                width: min(100%, 680px);
+                width: min(100%, 550px);
                 min-height: 150px;
                 padding: 15px;
                 background: white;
@@ -309,22 +297,34 @@ body {
 }
 
 .nav-menu {
+    margin-left: 18px;
     position: relative;
+    width: 50vh;    
+
+    button{
+        border: 0;
+        padding: 7px 12px;
+        background: transparent;
+        color: whitesmoke;
+        font: inherit;
+        font-size: 20px;
+        cursor: pointer;
+        transition: 0.3s ease;
+        &:hover {
+            border-radius: 100%;
+            background: rgba(165, 164, 165, 0.849);
+            transform:translateY(-5px);
+            text-shadow: 0 6px 5px var(--text-color);
+        }
+    }
+
 }
 
-.nav-menu > button {
-    border: 0;
-    background: transparent;
-    color: whitesmoke;
-    font: inherit;
-    cursor: pointer;
-    padding: 8px 0;
-}
 
 .nav-dropdown {
     position: absolute;
     top: 100%;
-    right: 0;
+    right: 6rem;
     z-index: 5;
     display: none;
     min-width: 150px;

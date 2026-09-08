@@ -50,7 +50,11 @@ async function updateSetlists(method = "GET", body = {}) {
         headers: { "Content-Type": "application/json" },
         body: method === "GET" ? undefined : JSON.stringify(body)
     });
-    const data = await response.json();
+    if (response.status === 401) {
+        window.location.href = "index.php";
+        return;
+    }
+    const data = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(data.error || "Setlist request failed");
     loadedSetlists = data;
     renderSetlists(data);
@@ -83,8 +87,10 @@ function renderSetlists(setlists) {
         card.querySelector(".open-setlist").addEventListener("click", () => card.classList.toggle("is-open"));
         card.querySelector('[data-action="add"]').addEventListener("click", () => {
             activeSetlistId = setlist.id;
-            songSearch.focus();
-            songSearch.scrollIntoView({ behavior: "smooth", block: "center" });
+            if (songSearch) {
+                songSearch.focus();
+                songSearch.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
         });
         card.querySelector('[data-action="edit"]').addEventListener("click", async () => {
             const name = window.prompt("Setlist name", setlist.name);
@@ -227,7 +233,12 @@ if (songSearch && songResults) {
                         const options = loadedSetlists.map(setlist => `${setlist.id}: ${setlist.name}`).join("\n");
                         const selected = activeSetlistId || window.prompt(`Add to which setlist?\n${options}`, String(loadedSetlists[0].id));
                         const setlistId = Number(selected);
-                        if (setlistId) await updateSetlists("POST", { setlist_id: setlistId, song_id: song.id }).catch(showSetlistError);
+                        if (!setlistId) return;
+                        try {
+                            await updateSetlists("POST", { setlist_id: setlistId, song_id: Number(song.id) });
+                        } catch (error) {
+                            showSetlistError(error);
+                        }
                     });
                     result.appendChild(add);
                 }

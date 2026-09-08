@@ -109,13 +109,34 @@ try {
             if (!setlistBelongsToUser($conn, $setlistId, (int) $user['id'])) {
                 throw new RuntimeException('Setlist not found.');
             }
-            $query = $conn->prepare(
-                'INSERT IGNORE INTO setlist_songs (setlist_id, song_id, position)
-                 SELECT ?, id, COALESCE((SELECT MAX(position) + 1 FROM setlist_songs WHERE setlist_id = ?), 0)
-                 FROM lyrics WHERE id = ?'
+            $songQuery = $conn->prepare('SELECT id FROM lyrics WHERE id = ? LIMIT 1');
+            $songQuery->bind_param('i', $songId);
+            $songQuery->execute();
+            if (!$songQuery->get_result()->fetch_assoc()) {
+                throw new RuntimeException('Song not found.');
+            }
+
+            $existingQuery = $conn->prepare(
+                'SELECT 1 FROM setlist_songs WHERE setlist_id = ? AND song_id = ? LIMIT 1'
             );
-            $query->bind_param('iii', $setlistId, $setlistId, $songId);
-            $query->execute();
+            $existingQuery->bind_param('ii', $setlistId, $songId);
+            $existingQuery->execute();
+
+            if (!$existingQuery->get_result()->fetch_assoc()) {
+                $positionQuery = $conn->prepare(
+                    'SELECT COALESCE(MAX(position) + 1, 0) AS next_position
+                     FROM setlist_songs WHERE setlist_id = ?'
+                );
+                $positionQuery->bind_param('i', $setlistId);
+                $positionQuery->execute();
+                $position = (int) $positionQuery->get_result()->fetch_assoc()['next_position'];
+
+                $insertQuery = $conn->prepare(
+                    'INSERT INTO setlist_songs (setlist_id, song_id, position) VALUES (?, ?, ?)'
+                );
+                $insertQuery->bind_param('iii', $setlistId, $songId, $position);
+                $insertQuery->execute();
+            }
         } else {
             $name = trim((string) ($body['name'] ?? ''));
             if ($name === '') {

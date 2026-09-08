@@ -14,17 +14,20 @@
     </div>
     <nav class="navbar">
         <h2>JGGMMD</h2>
-        <a href="#">Home</a>
+        
         <div class="nav-menu">
+            <button type="button" id="home-nav">Home</button>
             <button type="button" id="songs-nav-toggle" aria-expanded="false">Songs</button>
             <div class="nav-dropdown" id="songs-nav-menu">
                 <button type="button" data-song-action="add">Add song</button>
                 <button type="button" data-song-action="edit">Edit song</button>
                 <button type="button" data-song-action="delete">Delete song</button>
+                <button type="button" data-song-action="view">View song</button>
             </div>
+            <button type="button" id="setlist-nav" aria-expanded="false">Setlist</button>
+            <button type="button" id="support-nav" aria-expanded="false">Support</button>
         </div>
-        <a href="#setlist-container">Setlist</a>
-        <a href="#">Support</a>
+       
     </nav>
 
     
