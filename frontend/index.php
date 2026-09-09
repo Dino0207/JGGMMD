@@ -4,7 +4,8 @@
     $error = [
         'login' => $_SESSION['log_error'] ?? '',
         'register' => $_SESSION['reg_error'] ?? '',
-        'password' => $_SESSION['pass_error'] ?? ''
+        'password' => $_SESSION['pass_error'] ?? '',
+        'email' => $_SESSION['email_error'] ?? ''
     ];
     $activeForm = $_SESSION['active_form'] ?? 'login';
 
@@ -47,7 +48,7 @@
         <div class="form-box <?= showForm('register', $activeForm); ?>" id="register-form">
             <form action="../backend/login-reg.php" method="post">
                 <h2>Register</h2>
-                <?= showError($error['register']);?> <?=showError($error['password']);?>
+                <?= showError($error['register']);?> <?=showError($error['password']);?><?=showError($error['email'])?>
                 <input type="text" name="username" placeholder="Username" required>
                 <input type="email" name="email" placeholder="Email" required>
                 <input type="password" name="password" placeholder="Password" required>

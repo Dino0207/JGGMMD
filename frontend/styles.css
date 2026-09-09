@@ -312,7 +312,7 @@ body {
         transition: 0.3s ease;
         &:hover {
             border-radius: 100%;
-            background: rgba(165, 164, 165, 0.849);
+            color: var(--background-color);
             transform:translateY(-5px);
             text-shadow: 0 6px 5px var(--text-color);
         }
