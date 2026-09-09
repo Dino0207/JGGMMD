@@ -48,7 +48,7 @@
         <div class="form-box <?= showForm('register', $activeForm); ?>" id="register-form">
             <form action="../backend/login-reg.php" method="post">
                 <h2>Register</h2>
-                <?= showError($error['register']);?> <?=showError($error['password']);?><?=showError($error['email'])?>
+                <?= showError($error['register']);?> <?=showError($error['password']);?><?=showError($error['email']);?>
                 <input type="text" name="username" placeholder="Username" required>
                 <input type="email" name="email" placeholder="Email" required>
                 <input type="password" name="password" placeholder="Password" required>
