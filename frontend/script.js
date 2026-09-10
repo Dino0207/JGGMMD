@@ -107,7 +107,7 @@ function renderSetlists(setlists) {
     setlists.forEach(setlist => {
         const card = document.createElement("article");
         card.className = "setlist-items";
-        card.innerHTML = `<div class="setlist-heading"><div><h3></h3><p class="setlist-owner"></p></div><span class="setlist-hint">Manage</span></div><div class="setlist-songs"></div>`;
+        card.innerHTML = `<div class="setlist-heading"><div><h3></h3><p class="setlist-owner"></p></div><span class="setlist-hint">Click to Manage</span></div><div class="setlist-songs"></div>`;
         card.querySelector("h3").textContent = setlist.name;
         card.querySelector(".setlist-owner").textContent = `Made by ${setlist.username}`;
         const songs = card.querySelector(".setlist-songs");
