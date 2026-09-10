@@ -257,7 +257,7 @@ if (songModalClose) {
 if (songModal) {
     songModal.addEventListener("click", event => {
         if (event.target === songModal) {
-            closeSong();
+            closeSong();    
         }
     });
 }
