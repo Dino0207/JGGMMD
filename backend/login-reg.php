@@ -8,6 +8,10 @@ if (isset($_POST['register'])) {
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $role = ($_POST['Role'] !== 'Singer') ? 'Musician' : 'Singer';
 
+    function validate($username) {
+        return preg_match('/[^a-zA-Z0-9_]/', $username);
+    }
+
 
     $checkEmailQ = $conn->prepare("SELECT email FROM users WHERE email = ?");
     $checkEmailQ->bind_param('s', $email);
@@ -23,7 +27,11 @@ if (isset($_POST['register'])) {
         $_SESSION['active_form'] = 'register';
 
         } else {
-            if ($_POST['password'] !== $_POST['cpassword']) {
+            if (validate($username)) {
+                $_SESSION['reg_error'] = "Username cannot contain any special characters.";
+                $_SESSION['active_form'] = 'register';
+            }
+            elseif ($_POST['password'] !== $_POST['cpassword']) {
                 $_SESSION['pass_error'] = 'Password do not match.';
                 $_SESSION['active_form'] = 'register';
     
