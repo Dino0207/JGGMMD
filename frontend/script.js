@@ -14,10 +14,36 @@ const songModal = document.getElementById("song-modal");
 const songModalClose = document.getElementById("song-modal-close");
 const songModalTitle = document.getElementById("song-modal-title");
 const songModalAuthor = document.getElementById("song-modal-author");
+const songLibraryModal = document.getElementById("song-library-modal");
+const songLibraryClose = document.getElementById("song-library-close");
+const songLibraryList = document.getElementById("song-library-list");
 const setlistContainer = document.getElementById("setlist-container");
 const newSetlistButton = document.getElementById("new-setlist");
+const newSetlistModal = document.getElementById("new-setlist-modal");
+const newSetlistModalClose = document.getElementById("new-setlist-modal-close");
+const newSetlistForm = document.getElementById("new-setlist-form");
+const newSetlistNameInput = document.getElementById("new-setlist-name");
+const newSetlistMessage = document.getElementById("new-setlist-message");
+const setlistModal = document.getElementById("setlist-modal");
+const setlistModalClose = document.getElementById("setlist-modal-close");
+const setlistModalTitle = document.getElementById("setlist-modal-title");
+const setlistRenameForm = document.getElementById("setlist-rename-form");
+const setlistNameInput = document.getElementById("setlist-name");
+const setlistModalSongs = document.getElementById("setlist-modal-songs");
+const setlistSongSearch = document.getElementById("setlist-song-search");
+const setlistSongResults = document.getElementById("setlist-song-results");
+const deleteSetlistButton = document.getElementById("delete-setlist");
 const songsNavToggle = document.getElementById("songs-nav-toggle");
 const songsNavMenu = document.getElementById("songs-nav-menu");
+const accountNavToggle = document.getElementById("account-nav");
+const accountNavMenu = document.getElementById("account-nav-menu");
+const accountModal = document.getElementById("account-modal");
+const accountModalClose = document.getElementById("account-modal-close");
+const accountModalTitle = document.getElementById("account-modal-title");
+const accountMessage = document.getElementById("account-message");
+const profileImage = document.getElementById("profile-image");
+const profileImageInput = document.getElementById("profile-image-input");
+const profileImageMessage = document.getElementById("profile-image-message");
 const songEditor = document.getElementById("song-editor");
 const songEditorForm = document.getElementById("song-editor-form");
 const songEditorTitle = document.getElementById("song-editor-title");
@@ -25,12 +51,14 @@ const songEditorSubmit = document.getElementById("song-editor-submit");
 const songEditorCancel = document.getElementById("song-editor-cancel");
 const songEditorMessage = document.getElementById("song-editor-message");
 const songIdInput = document.getElementById("song-id");
+const songIdLabel = document.getElementById("song-id-label");
 const songTitleInput = document.getElementById("song-title");
 const songAuthorInput = document.getElementById("song-author");
 const songLyricsInput = document.getElementById("song-lyrics");
 let loadedSetlists = [];
 let activeSetlistId = null;
 let songEditorMode = "add";
+let activeSetlist = null;
 
 function showSong(song) {
     songModalTitle.textContent = song.title;
@@ -58,6 +86,14 @@ async function updateSetlists(method = "GET", body = {}) {
     if (!response.ok) throw new Error(data.error || "Setlist request failed");
     loadedSetlists = data;
     renderSetlists(data);
+    if (setlistModal && !setlistModal.hidden && activeSetlist) {
+        activeSetlist = loadedSetlists.find(setlist => Number(setlist.id) === Number(activeSetlist.id)) || null;
+        if (activeSetlist) {
+            setlistModalTitle.textContent = activeSetlist.name;
+            setlistNameInput.value = activeSetlist.name;
+            renderSetlistModalSongs();
+        }
+    }
 }
 
 function renderSetlists(setlists) {
@@ -71,34 +107,22 @@ function renderSetlists(setlists) {
     setlists.forEach(setlist => {
         const card = document.createElement("article");
         card.className = "setlist-items";
-        card.innerHTML = `<div class="setlist-heading"><div><h3></h3><p class="setlist-owner"></p></div><div class="setlist-actions"><button type="button" data-action="add">Add song</button><button type="button" data-action="edit">Edit</button><button type="button" data-action="delete">Delete</button></div></div><div class="setlist-songs"></div><button type="button" class="open-setlist">Open setlist</button>`;
+        card.innerHTML = `<div class="setlist-heading"><div><h3></h3><p class="setlist-owner"></p></div><span class="setlist-hint">Manage</span></div><div class="setlist-songs"></div>`;
         card.querySelector("h3").textContent = setlist.name;
         card.querySelector(".setlist-owner").textContent = `Made by ${setlist.username}`;
         const songs = card.querySelector(".setlist-songs");
+        if (!setlist.songs.length) {
+            songs.innerHTML = "<p class=\"empty-setlist-songs\">No songs in this setlist.</p>";
+        }
         setlist.songs.forEach(song => {
             const row = document.createElement("div");
             row.className = "setlist-song";
-            row.innerHTML = "<button type=\"button\" class=\"song-link\"></button><button type=\"button\" class=\"remove-song\" aria-label=\"Remove song\">&times;</button>";
-            row.querySelector(".song-link").textContent = `${song.title} - ${song.author}`;
-            row.querySelector(".song-link").addEventListener("click", () => showSong(song));
-            row.querySelector(".remove-song").addEventListener("click", () => updateSetlists("DELETE", { setlist_id: setlist.id, song_id: song.id }).catch(showSetlistError));
+            row.innerHTML = "<span class=\"setlist-song-title\"></span><span class=\"setlist-song-author\"></span>";
+            row.querySelector(".setlist-song-title").textContent = song.title;
+            row.querySelector(".setlist-song-author").textContent = song.author;
             songs.appendChild(row);
         });
-        card.querySelector(".open-setlist").addEventListener("click", () => card.classList.toggle("is-open"));
-        card.querySelector('[data-action="add"]').addEventListener("click", () => {
-            activeSetlistId = setlist.id;
-            if (songSearch) {
-                songSearch.focus();
-                songSearch.scrollIntoView({ behavior: "smooth", block: "center" });
-            }
-        });
-        card.querySelector('[data-action="edit"]').addEventListener("click", async () => {
-            const name = window.prompt("Setlist name", setlist.name);
-            if (name) await updateSetlists("PUT", { setlist_id: setlist.id, name }).catch(showSetlistError);
-        });
-        card.querySelector('[data-action="delete"]').addEventListener("click", async () => {
-            if (window.confirm(`Delete ${setlist.name}?`)) await updateSetlists("DELETE", { setlist_id: setlist.id }).catch(showSetlistError);
-        });
+        card.addEventListener("click", () => openSetlistModal(setlist.id));
         setlistContainer.appendChild(card);
     });
 }
@@ -112,13 +136,91 @@ if (setlistContainer) {
 }
 
 if (newSetlistButton) {
-    newSetlistButton.addEventListener("click", async () => {
-        const name = window.prompt("Setlist name");
-        if (name) await updateSetlists("POST", { name }).catch(showSetlistError);
+    newSetlistButton.addEventListener("click", () => {
+        newSetlistForm.reset();
+        newSetlistMessage.textContent = "";
+        newSetlistModal.hidden = false;
+        newSetlistNameInput.focus();
     });
 }
 
-function openSongEditor(mode) {
+if (newSetlistModalClose) newSetlistModalClose.addEventListener("click", () => { newSetlistModal.hidden = true; });
+
+if (newSetlistForm) {
+    newSetlistForm.addEventListener("submit", async event => {
+        event.preventDefault();
+        try {
+            await updateSetlists("POST", { name: newSetlistNameInput.value.trim() });
+            newSetlistModal.hidden = true;
+        } catch (error) {
+            newSetlistMessage.textContent = error.message;
+        }
+    });
+}
+
+function openSetlistModal(setlistId) {
+    activeSetlist = loadedSetlists.find(setlist => Number(setlist.id) === Number(setlistId));
+    if (!activeSetlist || !setlistModal) return;
+    activeSetlistId = activeSetlist.id;
+    setlistModalTitle.textContent = activeSetlist.name;
+    setlistNameInput.value = activeSetlist.name;
+    renderSetlistModalSongs();
+    setlistSongSearch.value = "";
+    setlistSongResults.replaceChildren();
+    setlistModal.hidden = false;
+}
+
+function renderSetlistModalSongs() {
+    setlistModalSongs.replaceChildren();
+    if (!activeSetlist.songs.length) {
+        setlistModalSongs.innerHTML = "<p class=\"empty-setlist-songs\">No songs in this setlist.</p>";
+        return;
+    }
+    activeSetlist.songs.forEach(song => {
+        const row = document.createElement("div");
+        row.className = "setlist-song";
+        row.innerHTML = "<button type=\"button\" class=\"song-link\"></button><button type=\"button\" class=\"remove-song\">Remove</button>";
+        row.querySelector(".song-link").textContent = `${song.title} - ${song.author}`;
+        row.querySelector(".song-link").addEventListener("click", () => {
+            setlistModal.hidden = true;
+            showSong(song);
+        });
+        row.querySelector(".remove-song").addEventListener("click", () => updateSetlists("DELETE", { setlist_id: activeSetlist.id, song_id: song.id }).catch(showSetlistError));
+        setlistModalSongs.appendChild(row);
+    });
+}
+
+async function loadSongLibrary() {
+    const response = await fetch("../backend/search-songs.php?q=");
+    if (!response.ok) throw new Error("Unable to load songs.");
+    const songs = await response.json();
+    songLibraryList.replaceChildren();
+    if (!songs.length) {
+        songLibraryList.innerHTML = "<p>No songs available.</p>";
+        return;
+    }
+    songs.forEach(song => {
+        const row = document.createElement("div");
+        row.className = "song-library-row";
+        row.innerHTML = "<button type=\"button\" class=\"song-link\"></button><button type=\"button\" data-song-edit>Edit</button><button type=\"button\" data-song-delete>Delete</button>";
+        row.querySelector(".song-link").textContent = `${song.title} - ${song.author}`;
+        row.querySelector(".song-link").addEventListener("click", () => {
+            songLibraryModal.hidden = true;
+            showSong(song);
+        });
+        row.querySelector("[data-song-edit]").addEventListener("click", () => {
+            songLibraryModal.hidden = true;
+            openSongEditor("edit", song);
+        });
+        row.querySelector("[data-song-delete]").addEventListener("click", () => {
+            songLibraryModal.hidden = true;
+            openSongEditor("delete", song);
+        });
+        songLibraryList.appendChild(row);
+    });
+}
+
+function openSongEditor(mode, song = null) {
     songEditorMode = mode;
     songEditor.hidden = false;
     songEditorTitle.textContent = mode === "add" ? "Add song" : `${mode[0].toUpperCase()}${mode.slice(1)} song`;
@@ -128,6 +230,14 @@ function openSongEditor(mode) {
     songAuthorInput.required = mode !== "delete";
     songLyricsInput.required = mode !== "delete";
     songEditorMessage.textContent = "";
+    songIdLabel.hidden = mode === "add";
+    songIdInput.hidden = mode === "add";
+    if (song) {
+        songIdInput.value = song.id;
+        songTitleInput.value = song.title;
+        songAuthorInput.value = song.author;
+        songLyricsInput.value = song.lyrics;
+    }
     if (mode === "add") {
         songEditorForm.reset();
         songIdInput.required = false;
@@ -146,9 +256,78 @@ if (songsNavToggle) {
     });
 }
 
+function openAccountModal(action) {
+    accountModalTitle.textContent = action === "password" ? "Change password" : "Change email";
+    accountMessage.textContent = "";
+    document.querySelectorAll("[data-account-form]").forEach(form => {
+        form.hidden = form.dataset.accountForm !== action;
+        if (!form.hidden) form.reset();
+    });
+    accountModal.hidden = false;
+}
+
+if (accountNavToggle) {
+    accountNavToggle.addEventListener("click", event => {
+        event.stopPropagation();
+        const open = accountNavMenu.classList.toggle("show");
+        accountNavToggle.setAttribute("aria-expanded", String(open));
+    });
+}
+
+document.querySelectorAll("[data-account-action]").forEach(button => {
+    button.addEventListener("click", () => {
+        openAccountModal(button.dataset.accountAction);
+        accountNavMenu.classList.remove("show");
+        accountNavToggle.setAttribute("aria-expanded", "false");
+    });
+});
+
+document.querySelectorAll("[data-account-form]").forEach(form => {
+    form.addEventListener("submit", async event => {
+        event.preventDefault();
+        const action = form.dataset.accountForm;
+        const payload = action === "password"
+            ? { action, current_password: document.getElementById("current-password").value, new_password: document.getElementById("new-password").value, confirm_password: document.getElementById("confirm-password").value }
+            : { action, current_password: document.getElementById("email-password").value, email: document.getElementById("new-email").value.trim() };
+        try {
+            const response = await fetch("../backend/account.php", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || "Account update failed.");
+            accountMessage.textContent = data.message;
+            form.reset();
+        } catch (error) {
+            accountMessage.textContent = error.message;
+        }
+    });
+});
+
+if (accountModalClose) accountModalClose.addEventListener("click", () => { accountModal.hidden = true; });
+
+if (profileImageInput) {
+    const savedImage = localStorage.getItem("jggm-profile-image");
+    if (savedImage) {
+        profileImage.src = savedImage;
+    }
+    profileImageInput.addEventListener("change", () => {
+        const file = profileImageInput.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.addEventListener("load", () => {
+            profileImage.src = reader.result;
+            localStorage.setItem("jggm-profile-image", reader.result);
+            profileImageMessage.textContent = "Profile image updated.";
+        });
+        reader.readAsDataURL(file);
+    });
+}
+
 document.querySelectorAll("[data-song-action]").forEach(button => {
     button.addEventListener("click", () => {
-        openSongEditor(button.dataset.songAction);
+        if (button.dataset.songAction === "view") {
+            loadSongLibrary().then(() => { songLibraryModal.hidden = false; }).catch(error => { songLibraryList.textContent = error.message; });
+        } else {
+            openSongEditor(button.dataset.songAction);
+        }
         songsNavMenu.classList.remove("show");
         songsNavToggle.setAttribute("aria-expanded", "false");
     });
@@ -158,6 +337,42 @@ if (songEditorCancel) {
     songEditorCancel.addEventListener("click", () => {
         songEditor.hidden = true;
         songEditorForm.reset();
+    });
+}
+
+if (songLibraryClose) songLibraryClose.addEventListener("click", () => { songLibraryModal.hidden = true; });
+if (setlistModalClose) setlistModalClose.addEventListener("click", () => { setlistModal.hidden = true; });
+
+if (setlistRenameForm) {
+    setlistRenameForm.addEventListener("submit", async event => {
+        event.preventDefault();
+        await updateSetlists("PUT", { setlist_id: activeSetlist.id, name: setlistNameInput.value.trim() }).catch(showSetlistError);
+        if (activeSetlist) openSetlistModal(activeSetlist.id);
+    });
+}
+
+if (deleteSetlistButton) {
+    deleteSetlistButton.addEventListener("click", async () => {
+        if (!activeSetlist || !window.confirm(`Delete ${activeSetlist.name}?`)) return;
+        await updateSetlists("DELETE", { setlist_id: activeSetlist.id }).catch(showSetlistError);
+        setlistModal.hidden = true;
+    });
+}
+
+if (setlistSongSearch) {
+    setlistSongSearch.addEventListener("input", async () => {
+        const query = setlistSongSearch.value.trim();
+        setlistSongResults.replaceChildren();
+        if (!query || !activeSetlist) return;
+        const response = await fetch(`../backend/search-songs.php?q=${encodeURIComponent(query)}`);
+        const songs = await response.json();
+        songs.forEach(song => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.textContent = `Add ${song.title} - ${song.author}`;
+            button.addEventListener("click", () => updateSetlists("POST", { setlist_id: activeSetlist.id, song_id: song.id }).catch(showSetlistError));
+            setlistSongResults.appendChild(button);
+        });
     });
 }
 
@@ -262,6 +477,12 @@ if (songModal) {
     });
 }
 
+[songLibraryModal, setlistModal, newSetlistModal].forEach(modal => {
+    if (modal) modal.addEventListener("click", event => {
+        if (event.target === modal) modal.hidden = true;
+    });
+});
+
 window.onclick = function(event) {
     if (!event.target.matches('.accbtn')) {
         var dropdowns = document.getElementsByClassName("acc-set-items");
@@ -276,5 +497,9 @@ window.onclick = function(event) {
     if (songsNavMenu && !event.target.closest('.nav-menu')) {
         songsNavMenu.classList.remove('show');
         songsNavToggle.setAttribute('aria-expanded', 'false');
+    }
+    if (accountNavMenu && !event.target.closest('.nav-menu')) {
+        accountNavMenu.classList.remove('show');
+        accountNavToggle.setAttribute('aria-expanded', 'false');
     }
 }
