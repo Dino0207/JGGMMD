@@ -911,6 +911,7 @@ body {
     border-top: 1px solid var(--border-color);
 }
 
+/*This is AI credits to claude, copilot*/
 .profile-details strong {
     color: var(--muted-color);
     font-size: 0.75rem;
@@ -957,7 +958,7 @@ body {
     height: auto;
     margin: 0;
     padding: 28px 32px 12px;
-    justify-content: flex-start;
+    justify-content: center;
 }
 
 .sbody .s-bar .search-field {
