@@ -17,6 +17,7 @@ const songModalAuthor = document.getElementById("song-modal-author");
 const songLibraryModal = document.getElementById("song-library-modal");
 const songLibraryClose = document.getElementById("song-library-close");
 const songLibraryList = document.getElementById("song-library-list");
+const songLibrarySearch = document.getElementById("song-library-search");
 const setlistContainer = document.getElementById("setlist-container");
 const newSetlistButton = document.getElementById("new-setlist");
 const newSetlistModal = document.getElementById("new-setlist-modal");
@@ -46,6 +47,13 @@ const accountMessage = document.getElementById("account-message");
 const profileImage = document.getElementById("profile-image");
 const profileImageInput = document.getElementById("profile-image-input");
 const profileImageMessage = document.getElementById("profile-image-message");
+const profileCropModal = document.getElementById("profile-crop-modal");
+const profileCropImage = document.getElementById("profile-crop-image");
+const profileCropFrame = document.getElementById("profile-crop-frame");
+const profileCropZoom = document.getElementById("profile-crop-zoom-input");
+const profileCropClose = document.getElementById("profile-crop-close");
+const profileCropCancel = document.getElementById("profile-crop-cancel");
+const profileCropApply = document.getElementById("profile-crop-apply");
 const songEditor = document.getElementById("song-editor");
 const songEditorForm = document.getElementById("song-editor-form");
 const songEditorTitle = document.getElementById("song-editor-title");
@@ -196,15 +204,13 @@ function renderSetlistModalSongs() {
     });
 }
 
-async function loadSongLibrary() {
-    const response = await fetch("../backend/search-songs.php?q=");
-    if (!response.ok) throw new Error("Unable to load songs.");
-    const songs = await response.json();
+function renderSongLibrary(songs) {
     songLibraryList.replaceChildren();
     if (!songs.length) {
-        songLibraryList.innerHTML = "<p>No songs available.</p>";
+        songLibraryList.innerHTML = "<p>No matching songs found.</p>";
         return;
     }
+
     songs.forEach(song => {
         const row = document.createElement("div");
         row.className = "song-library-row";
@@ -224,6 +230,17 @@ async function loadSongLibrary() {
         });
         songLibraryList.appendChild(row);
     });
+}
+
+async function loadSongLibrary() {
+    const response = await fetch("../backend/search-songs.php?q=");
+    if (!response.ok) throw new Error("Unable to load songs.");
+    const songs = await response.json();
+    renderSongLibrary(songs);
+    if (songLibrarySearch) {
+        songLibrarySearch.value = "";
+        songLibrarySearch.dataset.songs = JSON.stringify(songs);
+    }
 }
 
 function openSongEditor(mode, song = null) {
@@ -261,8 +278,13 @@ function closeNavigationMenus() {
     accountNavToggle.setAttribute("aria-expanded", "false");
 }
 
+function isHamburgerMenu() {
+    return window.matchMedia("(max-width: 760px)").matches;
+}
+
 if (songsNavToggle) {
     songsNavToggle.addEventListener("click", event => {
+        if (!isHamburgerMenu()) return;
         event.stopPropagation();
         const open = !songsNavMenu.classList.contains("show");
         closeNavigationMenus();
@@ -283,6 +305,7 @@ function openAccountModal(action) {
 
 if (accountNavToggle) {
     accountNavToggle.addEventListener("click", event => {
+        if (!isHamburgerMenu()) return;
         event.stopPropagation();
         const open = !accountNavMenu.classList.contains("show");
         closeNavigationMenus();
@@ -348,16 +371,101 @@ if (profileImageInput) {
     if (savedImage) {
         profileImage.src = savedImage;
     }
+
+    let cropScale = 1;
+    let cropX = 0;
+    let cropY = 0;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let isDraggingCrop = false;
+
+    function updateCropPreview() {
+        profileCropImage.style.transform = `translate(calc(-50% + ${cropX}px), calc(-50% + ${cropY}px)) scale(${cropScale})`;
+    }
+
+    function closeProfileCrop() {
+        profileCropModal.hidden = true;
+        profileCropImage.removeAttribute("src");
+        profileImageInput.value = "";
+    }
+
+    function applyProfileCrop() {
+        const frameRect = profileCropFrame.getBoundingClientRect();
+        const imageRect = profileCropImage.getBoundingClientRect();
+        const canvas = document.createElement("canvas");
+        const outputSize = 720;
+        const context = canvas.getContext("2d");
+        const sourceScale = profileCropImage.naturalWidth / imageRect.width;
+        const cropLeft = (frameRect.left - imageRect.left) * sourceScale;
+        const cropTop = (frameRect.top - imageRect.top) * sourceScale;
+        const cropSize = frameRect.width * sourceScale;
+
+        canvas.width = outputSize;
+        canvas.height = outputSize;
+        context.fillStyle = getComputedStyle(document.documentElement)
+            .getPropertyValue("--profile-image-background")
+            .trim();
+        context.fillRect(0, 0, outputSize, outputSize);
+        context.drawImage(profileCropImage, cropLeft, cropTop, cropSize, cropSize, 0, 0, outputSize, outputSize);
+        const croppedImage = canvas.toDataURL("image/jpeg", 0.9);
+        profileImage.src = croppedImage;
+        localStorage.setItem("jggm-profile-image", croppedImage);
+        profileImageMessage.textContent = "Profile image updated.";
+        closeProfileCrop();
+    }
+
     profileImageInput.addEventListener("change", () => {
         const file = profileImageInput.files[0];
         if (!file) return;
         const reader = new FileReader();
         reader.addEventListener("load", () => {
-            profileImage.src = reader.result;
-            localStorage.setItem("jggm-profile-image", reader.result);
-            profileImageMessage.textContent = "Profile image updated.";
+            cropScale = 1;
+            cropX = 0;
+            cropY = 0;
+            profileCropZoom.value = "1";
+            profileCropImage.src = reader.result;
+            profileCropImage.onload = () => {
+                const imageRatio = profileCropImage.naturalWidth / profileCropImage.naturalHeight;
+                if (imageRatio >= 1) {
+                    profileCropImage.style.width = "auto";
+                    profileCropImage.style.height = "100%";
+                } else {
+                    profileCropImage.style.width = "100%";
+                    profileCropImage.style.height = "auto";
+                }
+                profileCropModal.hidden = false;
+                updateCropPreview();
+            };
         });
         reader.readAsDataURL(file);
+    });
+
+    profileCropZoom.addEventListener("input", () => {
+        cropScale = Number(profileCropZoom.value);
+        updateCropPreview();
+    });
+
+    profileCropFrame.addEventListener("pointerdown", event => {
+        isDraggingCrop = true;
+        dragStartX = event.clientX - cropX;
+        dragStartY = event.clientY - cropY;
+        profileCropFrame.setPointerCapture(event.pointerId);
+    });
+
+    profileCropFrame.addEventListener("pointermove", event => {
+        if (!isDraggingCrop) return;
+        cropX = event.clientX - dragStartX;
+        cropY = event.clientY - dragStartY;
+        updateCropPreview();
+    });
+
+    profileCropFrame.addEventListener("pointerup", () => { isDraggingCrop = false; });
+    profileCropFrame.addEventListener("pointercancel", () => { isDraggingCrop = false; });
+    profileCropApply.addEventListener("click", applyProfileCrop);
+    profileCropClose.addEventListener("click", closeProfileCrop);
+    profileCropCancel.addEventListener("click", closeProfileCrop);
+    profileCropModal.addEventListener("click", event => {
+        if (event.target === profileCropModal) closeProfileCrop();
     });
 }
 
@@ -381,6 +489,14 @@ if (songEditorCancel) {
 
 if (songLibraryClose) songLibraryClose.addEventListener("click", () => { songLibraryModal.hidden = true; });
 if (setlistModalClose) setlistModalClose.addEventListener("click", () => { setlistModal.hidden = true; });
+
+if (songLibrarySearch) {
+    songLibrarySearch.addEventListener("input", () => {
+        const query = songLibrarySearch.value.trim().toLowerCase();
+        const songs = JSON.parse(songLibrarySearch.dataset.songs || "[]");
+        renderSongLibrary(songs.filter(song => `${song.title} ${song.author}`.toLowerCase().includes(query)));
+    });
+}
 
 if (setlistRenameForm) {
     setlistRenameForm.addEventListener("submit", async event => {

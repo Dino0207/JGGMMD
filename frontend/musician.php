@@ -29,18 +29,23 @@ if (!empty($_SESSION['username'])) {
         
         <div class="nav-menu">
             <button type="button" id="home-nav">Home</button>
-            <button type="button" id="songs-nav-toggle" aria-expanded="false">Songs</button>
-            <div class="nav-dropdown" id="songs-nav-menu">
-                <button type="button" data-song-action="add">Add song</button>
-                <button type="button" data-song-action="view">View song</button>
+            <div class="nav-dropdown-container">
+                <button type="button" id="songs-nav-toggle" aria-expanded="false">Songs</button>
+                <div class="nav-dropdown" id="songs-nav-menu">
+                    <button type="button" data-song-action="add">Add song</button>
+                    <button type="button" data-song-action="view">View song</button>
+                </div>
+            </div>
+            <div class="nav-dropdown-container">
+                <button type="button" id="account-nav" aria-expanded="false">Account</button>
+                <div class="nav-dropdown account-dropdown" id="account-nav-menu">
+                    <button type="button" data-account-action="password">Change password</button>
+                    <button type="button" data-account-action="email">Change email</button>
+                    <button type="button" data-account-action="logout">Logout</button>
+                </div>
             </div>
             <button type="button" id="support-nav" aria-expanded="false">Support</button>
-            <button type="button" id="account-nav" aria-expanded="false">Account</button>
-            <div class="nav-dropdown account-dropdown" id="account-nav-menu">
-                <button type="button" data-account-action="password">Change password</button>
-                <button type="button" data-account-action="email">Change email</button>
-                <button type="button" data-account-action="logout">Logout</button>
-            </div>
+
         </div>
        
     </nav>
@@ -59,6 +64,25 @@ if (!empty($_SESSION['username'])) {
                 <p><strong>Role</strong><span><?= htmlspecialchars($profile['role'], ENT_QUOTES) ?></span></p>
             </div>
             <div class="profile-image-message" id="profile-image-message" role="status"></div>
+        </div>
+
+        <div class="profile-crop-modal" id="profile-crop-modal" hidden>
+            <div class="profile-crop-content" role="dialog" aria-modal="true" aria-labelledby="profile-crop-title">
+                <button type="button" class="song-modal-close" id="profile-crop-close" aria-label="Close image editor">&times;</button>
+                <h2 id="profile-crop-title">Fit profile image</h2>
+                <p class="profile-crop-help">Drag the image to position it, then adjust the zoom.</p>
+                <div class="profile-crop-frame" id="profile-crop-frame">
+                    <img id="profile-crop-image" alt="Profile image preview">
+                </div>
+                <label class="profile-crop-zoom" for="profile-crop-zoom-input">
+                    <span>Zoom</span>
+                    <input type="range" id="profile-crop-zoom-input" min="1" max="3" step="0.01" value="1">
+                </label>
+                <div class="profile-crop-actions">
+                    <button type="button" id="profile-crop-cancel">Cancel</button>
+                    <button type="button" id="profile-crop-apply">Apply image</button>
+                </div>
+            </div>
         </div>
 
         <div class="account-modal" id="account-modal" hidden>
@@ -127,7 +151,12 @@ if (!empty($_SESSION['username'])) {
             <div class="song-library-modal" id="song-library-modal" hidden>
                 <div class="song-library-content" role="dialog" aria-modal="true" aria-labelledby="song-library-title">
                     <button type="button" class="song-modal-close" id="song-library-close" aria-label="Close song library">&times;</button>
-                    <h2 id="song-library-title">Available songs</h2>
+                    <div class="song-library-header">
+                        <h2 id="song-library-title">Available songs</h2>
+                        <label class="song-library-search">
+                            <input type="search" id="song-library-search" placeholder="Search by Title or Author" aria-label="Search available songs">
+                        </label>
+                    </div>
                     <div id="song-library-list" class="song-library-list"></div>
                 </div>
             </div>
