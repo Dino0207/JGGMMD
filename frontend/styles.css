@@ -885,7 +885,6 @@ body {
     color: var(--background-color);
 }
 
-/* Shared dashboard surface and control language. */
 .mbody {
     align-items: stretch;
     max-width: 1600px;
