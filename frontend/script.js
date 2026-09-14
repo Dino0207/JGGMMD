@@ -37,6 +37,8 @@ const songsNavToggle = document.getElementById("songs-nav-toggle");
 const songsNavMenu = document.getElementById("songs-nav-menu");
 const accountNavToggle = document.getElementById("account-nav");
 const accountNavMenu = document.getElementById("account-nav-menu");
+const hamburger = document.querySelector(".hamburger");
+const navMenu = document.querySelector(".nav-menu");
 const accountModal = document.getElementById("account-modal");
 const accountModalClose = document.getElementById("account-modal-close");
 const accountModalTitle = document.getElementById("account-modal-title");
@@ -117,9 +119,13 @@ function renderSetlists(setlists) {
         setlist.songs.forEach(song => {
             const row = document.createElement("div");
             row.className = "setlist-song";
-            row.innerHTML = "<span class=\"setlist-song-title\"></span><span class=\"setlist-song-author\"></span>";
+            row.innerHTML = "<button type=\"button\" class=\"song-link setlist-song-link\"><span class=\"setlist-song-title\"></span><span class=\"setlist-song-author\"></span></button>";
             row.querySelector(".setlist-song-title").textContent = song.title;
             row.querySelector(".setlist-song-author").textContent = song.author;
+            row.querySelector(".setlist-song-link").addEventListener("click", event => {
+                event.stopPropagation();
+                showSong(song);
+            });
             songs.appendChild(row);
         });
         card.addEventListener("click", () => openSetlistModal(setlist.id));
@@ -248,10 +254,19 @@ function openSongEditor(mode, song = null) {
     songEditor.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
+function closeNavigationMenus() {
+    songsNavMenu.classList.remove("show");
+    accountNavMenu.classList.remove("show");
+    songsNavToggle.setAttribute("aria-expanded", "false");
+    accountNavToggle.setAttribute("aria-expanded", "false");
+}
+
 if (songsNavToggle) {
     songsNavToggle.addEventListener("click", event => {
         event.stopPropagation();
-        const open = songsNavMenu.classList.toggle("show");
+        const open = !songsNavMenu.classList.contains("show");
+        closeNavigationMenus();
+        songsNavMenu.classList.toggle("show", open);
         songsNavToggle.setAttribute("aria-expanded", String(open));
     });
 }
@@ -269,16 +284,41 @@ function openAccountModal(action) {
 if (accountNavToggle) {
     accountNavToggle.addEventListener("click", event => {
         event.stopPropagation();
-        const open = accountNavMenu.classList.toggle("show");
+        const open = !accountNavMenu.classList.contains("show");
+        closeNavigationMenus();
+        accountNavMenu.classList.toggle("show", open);
         accountNavToggle.setAttribute("aria-expanded", String(open));
     });
 }
 
+if (hamburger) {
+    hamburger.addEventListener("click", () => {
+        const open = navMenu.classList.toggle("show");
+        closeNavigationMenus();
+        hamburger.classList.toggle("active", open);
+        hamburger.setAttribute("aria-expanded", String(open));
+    });
+}
+
 document.querySelectorAll("[data-account-action]").forEach(button => {
-    button.addEventListener("click", () => {
+    button.addEventListener("click", async () => {
+        if (button.dataset.accountAction === "logout") {
+            closeNavigationMenus();
+            try {
+                const response = await fetch("../backend/account.php", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ action: "logout" })
+                });
+                if (!response.ok) throw new Error("Logout failed.");
+                window.location.href = "index.php";
+            } catch (error) {
+                accountMessage.textContent = error.message;
+            }
+            return;
+        }
         openAccountModal(button.dataset.accountAction);
-        accountNavMenu.classList.remove("show");
-        accountNavToggle.setAttribute("aria-expanded", "false");
+        closeNavigationMenus();
     });
 });
 
@@ -328,8 +368,7 @@ document.querySelectorAll("[data-song-action]").forEach(button => {
         } else {
             openSongEditor(button.dataset.songAction);
         }
-        songsNavMenu.classList.remove("show");
-        songsNavToggle.setAttribute("aria-expanded", "false");
+        closeNavigationMenus();
     });
 });
 
@@ -495,11 +534,11 @@ window.onclick = function(event) {
         }
     }
     if (songsNavMenu && !event.target.closest('.nav-menu')) {
-        songsNavMenu.classList.remove('show');
-        songsNavToggle.setAttribute('aria-expanded', 'false');
+        closeNavigationMenus();
     }
-    if (accountNavMenu && !event.target.closest('.nav-menu')) {
-        accountNavMenu.classList.remove('show');
-        accountNavToggle.setAttribute('aria-expanded', 'false');
+    if (navMenu && !event.target.closest('.navbar')) {
+        navMenu.classList.remove('show');
+        hamburger.classList.remove('active');
+        hamburger.setAttribute('aria-expanded', 'false');
     }
 }

@@ -19,13 +19,13 @@ if (!empty($_SESSION['username'])) {
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="hamburger">
-        <span></span>
-        <span></span>
-        <span></span>
-    </div>
     <nav class="navbar">
         <h2>JGGMMD</h2>
+        <button type="button" class="hamburger" aria-label="Toggle navigation" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
         
         <div class="nav-menu">
             <button type="button" id="home-nav">Home</button>
@@ -39,6 +39,7 @@ if (!empty($_SESSION['username'])) {
             <div class="nav-dropdown account-dropdown" id="account-nav-menu">
                 <button type="button" data-account-action="password">Change password</button>
                 <button type="button" data-account-action="email">Change email</button>
+                <button type="button" data-account-action="logout">Logout</button>
             </div>
         </div>
        

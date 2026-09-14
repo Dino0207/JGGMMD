@@ -18,6 +18,13 @@ function accountBody(): array
 
 try {
     $body = accountBody();
+    if (($body['action'] ?? '') === 'logout') {
+        $_SESSION = [];
+        session_destroy();
+        echo json_encode(['message' => 'Logged out successfully.']);
+        exit;
+    }
+
     $username = $_SESSION['username'];
     $userQuery = $conn->prepare('SELECT id, password FROM users WHERE username = ? LIMIT 1');
     $userQuery->bind_param('s', $username);
