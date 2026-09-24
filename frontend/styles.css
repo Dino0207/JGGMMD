@@ -1067,7 +1067,8 @@ h1, h2, h3, .navbar h1, .navbar h2 {
 
 .mbody {
     align-items: stretch;
-    max-width: 1600px;
+    width: min(100%, 1800px);
+    max-width: 1800px;
     margin: 0 auto;
     background: rgb(255 244 242 / 50%);
 }
@@ -1204,6 +1205,26 @@ h1, h2, h3, .navbar h1, .navbar h2 {
 .sbody .hero .setlist-container .setlist-items:hover {
     border-color: var(--secondary-color);
     box-shadow: 0 16px 30px rgb(59 31 63 / 14%);
+}
+
+@media (min-width: 1601px) {
+    .mbody {
+        width: min(100% - 64px, 1800px);
+    }
+
+    .profile-cont {
+        flex-basis: 300px;
+    }
+
+    .sbody .hero .setlist-container {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 20px;
+    }
+
+    .sbody .hero .setlist-container .setlist-items {
+        width: auto;
+    }
 }
 
 .setlist-heading h3 {
