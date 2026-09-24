@@ -1209,7 +1209,9 @@ h1, h2, h3, .navbar h1, .navbar h2 {
 
 @media (min-width: 1601px) {
     .mbody {
-        width: min(100% - 64px, 1800px);
+        width: min(100%, 1800px);
+        margin-left: 0;
+        margin-right: auto;
     }
 
     .profile-cont {
