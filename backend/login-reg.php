@@ -57,17 +57,15 @@ if (isset($_POST['login'])) {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    $checkUserQ = $conn->query("SELECT * FROM users WHERE email = '$email'");
-    if ($checkUserQ->num_rows > 0) {
-        $user = $checkUserQ->fetch_assoc();
+    $checkUserQ = $conn->prepare('SELECT username, email, password, role FROM users WHERE email = ? LIMIT 1');
+    $checkUserQ->bind_param('s', $email);
+    $checkUserQ->execute();
+    $user = $checkUserQ->get_result()->fetch_assoc();
+    if ($user) {
         if (password_verify($password, $user['password'])) {
             $_SESSION['username'] = $user['username'];
             $_SESSION['email'] = $user['email'];
-            if ($user['role'] === 'Singer') {
-                header("Location: ../frontend/singer.php");
-            } else if ($user['role'] === 'Musician') {
-                header("Location: ../frontend/musician.php");
-            }
+            header("Location: ../frontend/jggmmd.php");
             exit();
         }
     }

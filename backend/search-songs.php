@@ -1,7 +1,14 @@
 <?php
+session_start();
 require_once 'config.php';
 
 header('Content-Type: application/json');
+
+if (empty($_SESSION['username'])) {
+    http_response_code(401);
+    echo json_encode(['error' => 'You must be logged in.']);
+    exit;
+}
 
 $search = trim($_GET['q'] ?? '');
 $term = "%$search%";

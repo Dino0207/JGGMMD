@@ -49,7 +49,7 @@ if (!in_array($profile['role'] ?? '', ['Singer', 'Musician'], true)) {
                     <?php else: ?>
                         <button type="button" data-song-action="chords">Add chords</button>
                     <?php endif; ?>
-                    <button type="button" data-song-action="view">Available songs</button>
+                    <button type="button" data-song-action="view">Song List</button>
                 </div>
             </div>
             <button type="button" id="support-nav">Support</button>
@@ -58,7 +58,6 @@ if (!in_array($profile['role'] ?? '', ['Singer', 'Musician'], true)) {
                 <div class="nav-dropdown account-dropdown" id="account-nav-menu">
                     <button type="button" data-account-action="password">Change password</button>
                     <button type="button" data-account-action="email">Change email</button>
-                    <button type="button" data-account-action="delete">Delete account</button>
                     <button type="button" data-account-action="logout">Logout</button>
                 </div>
             </div>
@@ -163,8 +162,8 @@ if (!in_array($profile['role'] ?? '', ['Singer', 'Musician'], true)) {
                     <div class="song-view-toolbar">
                         <h2 id="song-modal-title"></h2>
                         <div class="song-view-toggle" role="group" aria-label="Song view">
-                            <button type="button" class="active" data-song-view="lyrics">Lyrics</button>
-                            <button type="button" data-song-view="chords">Chords</button>
+                            <button type="button" class="active" data-song-view="lyrics" aria-pressed="true"><span class="song-view-icon" aria-hidden="true">&#9835;</span>Lyrics</button>
+                            <button type="button" data-song-view="chords" aria-pressed="false"><span class="song-view-icon" aria-hidden="true">&#9833;</span>Chords</button>
                         </div>
                     </div>
                     <p id="song-modal-author"></p>
@@ -230,8 +229,8 @@ if (!in_array($profile['role'] ?? '', ['Singer', 'Musician'], true)) {
             <div class="hero">
                 <div class="setlist-toolbar">
                     <div>
-                        <h2>My setlists</h2>
-                        <p>Select a setlist to manage its songs.</p>
+                        <h2><?= $isSinger ? 'My setlists' : 'Singer setlists' ?></h2>
+                        <p><?= $isSinger ? 'Select a setlist to manage its songs.' : 'Select a setlist to view its songs.' ?></p>
                     </div>
                     <button type="button" id="new-setlist">+ New setlist</button>
                 </div>

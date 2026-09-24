@@ -28,7 +28,7 @@ $conn->query(
     ) ENGINE=InnoDB'
 );
 
-$userQuery = $conn->prepare('SELECT id, username FROM users WHERE username = ? LIMIT 1');
+$userQuery = $conn->prepare('SELECT id, username, role FROM users WHERE username = ? LIMIT 1');
 $userQuery->bind_param('s', $_SESSION['username']);
 $userQuery->execute();
 $user = $userQuery->get_result()->fetch_assoc();
@@ -39,6 +39,7 @@ if (!$user) {
     exit;
 }
 $userId = (int) $user['id'];
+$isSinger = $user['role'] === 'Singer';
 
 function requestBody(): array
 {
@@ -54,19 +55,22 @@ function setlistBelongsToUser(mysqli $conn, int $setlistId, int $userId): bool
     return (bool) $query->get_result()->fetch_assoc();
 }
 
-function getSetlists(mysqli $conn, int $userId): array
+function getSetlists(mysqli $conn, int $userId, bool $isSinger): array
 {
+    $scope = $isSinger ? 's.user_id = ?' : "u.role = 'Singer'";
     $query = $conn->prepare(
-        'SELECT s.id, s.name, u.username AS username,
+        "SELECT s.id, s.name, u.username AS username,
                 ls.song_id, ls.position, l.title, l.author, l.lyrics
          FROM setlists s
          JOIN users u ON u.id = s.user_id
          LEFT JOIN setlist_songs ls ON ls.setlist_id = s.id
          LEFT JOIN lyrics l ON l.id = ls.song_id
-         WHERE s.user_id = ?
-         ORDER BY s.updated_at DESC, ls.position ASC, l.title ASC'
+         WHERE $scope
+         ORDER BY s.updated_at DESC, ls.position ASC, l.title ASC"
     );
-    $query->bind_param('i', $userId);
+    if ($isSinger) {
+        $query->bind_param('i', $userId);
+    }
     $query->execute();
 
     $setlists = [];
@@ -97,11 +101,14 @@ $body = requestBody();
 
 try {
     if ($method === 'GET') {
-        echo json_encode(getSetlists($conn, (int) $user['id']));
+        echo json_encode(getSetlists($conn, (int) $user['id'], $isSinger));
         exit;
     }
 
     if ($method === 'POST') {
+        if (!$isSinger) {
+            throw new RuntimeException('Musicians can only view setlists.');
+        }
         $setlistId = (int) ($body['setlist_id'] ?? 0);
         $songId = (int) ($body['song_id'] ?? 0);
 
@@ -146,11 +153,14 @@ try {
             $query->bind_param('is', $userId, $name);
             $query->execute();
         }
-        echo json_encode(getSetlists($conn, (int) $user['id']));
+        echo json_encode(getSetlists($conn, (int) $user['id'], $isSinger));
         exit;
     }
 
     if ($method === 'PUT') {
+        if (!$isSinger) {
+            throw new RuntimeException('Musicians can only view setlists.');
+        }
         $setlistId = (int) ($body['setlist_id'] ?? 0);
         $name = trim((string) ($body['name'] ?? ''));
         if (!$setlistId || $name === '' || !setlistBelongsToUser($conn, $setlistId, (int) $user['id'])) {
@@ -159,11 +169,14 @@ try {
         $query = $conn->prepare('UPDATE setlists SET name = ? WHERE id = ?');
         $query->bind_param('si', $name, $setlistId);
         $query->execute();
-        echo json_encode(getSetlists($conn, (int) $user['id']));
+        echo json_encode(getSetlists($conn, (int) $user['id'], $isSinger));
         exit;
     }
 
     if ($method === 'DELETE') {
+        if (!$isSinger) {
+            throw new RuntimeException('Musicians can only view setlists.');
+        }
         $setlistId = (int) ($body['setlist_id'] ?? 0);
         $songId = (int) ($body['song_id'] ?? 0);
         if (!$setlistId || !setlistBelongsToUser($conn, $setlistId, (int) $user['id'])) {
@@ -177,7 +190,7 @@ try {
             $query->bind_param('i', $setlistId);
         }
         $query->execute();
-        echo json_encode(getSetlists($conn, (int) $user['id']));
+        echo json_encode(getSetlists($conn, (int) $user['id'], $isSinger));
         exit;
     }
 

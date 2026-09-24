@@ -10,6 +10,16 @@ if (empty($_SESSION['username'])) {
     exit;
 }
 
+$userQuery = $conn->prepare('SELECT role FROM users WHERE username = ? LIMIT 1');
+$userQuery->bind_param('s', $_SESSION['username']);
+$userQuery->execute();
+$user = $userQuery->get_result()->fetch_assoc();
+if (!$user) {
+    http_response_code(401);
+    echo json_encode(['error' => 'User account not found.']);
+    exit;
+}
+
 function body(): array
 {
     $value = json_decode(file_get_contents('php://input'), true);
@@ -31,6 +41,9 @@ try {
     $method = $_SERVER['REQUEST_METHOD'];
 
     if ($method === 'POST') {
+        if ($user['role'] !== 'Singer') {
+            throw new RuntimeException('Only singers can add songs.');
+        }
         [$title, $author, $lyrics] = validateSong(body());
         $query = $conn->prepare('INSERT INTO lyrics (title, author, lyrics) VALUES (?, ?, ?)');
         $query->bind_param('sss', $title, $author, $lyrics);
@@ -57,6 +70,9 @@ try {
     }
 
     if ($method === 'DELETE') {
+        if ($user['role'] !== 'Singer') {
+            throw new RuntimeException('Only singers can delete songs.');
+        }
         $songId = (int) (body()['id'] ?? 0);
         if (!$songId) {
             throw new RuntimeException('Song id is required.');
