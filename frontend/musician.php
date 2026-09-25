@@ -233,9 +233,20 @@ if (!in_array($profile['role'] ?? '', ['Singer', 'Musician'], true)) {
                         <h2>My setlists</h2>
                         <p>Select a setlist to manage its songs.</p>
                     </div>
+                    <div class="dashboard-stats" aria-label="Dashboard statistics">
+                        <div class="stat-card"><span>Total songs</span><strong id="stat-total-songs">0</strong></div>
+                        <div class="stat-card"><span>Active setlists</span><strong id="stat-active-setlists">0</strong></div>
+                        <div class="stat-card"><span>Songs in rotation</span><strong id="stat-rotation">0</strong></div>
+                    </div>
                     <button type="button" id="new-setlist">+ New setlist</button>
                 </div>
-                <div class="setlist-container" id="setlist-container" aria-live="polite"></div>
+                <div class="dashboard-lower">
+                    <div class="setlist-container" id="setlist-container" aria-live="polite"></div>
+                    <aside class="activity-widget" aria-labelledby="activity-title">
+                        <div class="activity-heading"><span class="activity-icon" aria-hidden="true">♫</span><div><p class="widget-eyebrow">Keep the rhythm</p><h3 id="activity-title">Recent activity</h3></div></div>
+                        <ul id="recent-activity"><li class="activity-empty">Your recent song activity will appear here.</li></ul>
+                    </aside>
+                </div>
             </div>
         </div>
 
