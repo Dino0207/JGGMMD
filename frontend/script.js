@@ -123,7 +123,7 @@ function renderSetlists(setlists) {
     setlists.forEach(setlist => {
         const card = document.createElement("article");
         card.className = "setlist-items";
-        card.innerHTML = `<div class="setlist-heading"><div><h3></h3><p class="setlist-owner"></p></div><div class="setlist-heading-actions"><span class="setlist-hint">Click to ${isSinger ? "Manage" : "View"}</span>${isSinger ? '<button type="button" class="setlist-edit" aria-label="Edit setlist" title="Edit setlist">&#9998;</button>' : '<button type="button" class="setlist-view" aria-label="View setlist" title="View setlist">&#128065;</button>'}</div></div><div class="setlist-songs"></div>`;
+        card.innerHTML = `<div class="setlist-heading"><div><h3></h3><p class="setlist-owner"></p></div><div class="setlist-heading-actions"><span class="setlist-hint">Click to ${isSinger ? "Manage" : "View"}</span>${isSinger ? '<button type="button" class="setlist-edit" aria-label="Edit setlist" title="Edit setlist">&#9998;</button>' : '<button type="button" class="setlist-view" aria-label="View setlist" title="View setlist">&#128065;</button>'}</div></div><div class="setlist-songs"><div class="song-list-header" aria-hidden="true"><span>Title</span><span>Author</span></div></div>`;
         card.querySelector("h3").textContent = setlist.name;
         card.querySelector(".setlist-owner").textContent = `Made by ${setlist.username}`;
         const editSetlistButton = card.querySelector(".setlist-edit");
@@ -212,6 +212,11 @@ function openSetlistModal(setlistId) {
 
 function renderSetlistModalSongs() {
     setlistModalSongs.replaceChildren();
+    const header = document.createElement("div");
+    header.className = "song-list-header";
+    header.setAttribute("aria-hidden", "true");
+    header.innerHTML = "<span>Title</span><span>Author</span>";
+    setlistModalSongs.appendChild(header);
     if (!activeSetlist.songs.length) {
         setlistModalSongs.innerHTML = "<p class=\"empty-setlist-songs\">No songs in this setlist.</p>";
         return;
@@ -220,9 +225,10 @@ function renderSetlistModalSongs() {
         const row = document.createElement("div");
         row.className = "setlist-song";
         row.innerHTML = isSinger
-            ? "<button type=\"button\" class=\"song-link\"></button><button type=\"button\" class=\"remove-song\" aria-label=\"Remove song from setlist\" title=\"Remove song from setlist\">x</button>"
-            : "<button type=\"button\" class=\"song-link\"></button>";
-        row.querySelector(".song-link").textContent = `${song.title} - ${song.author}`;
+            ? "<button type=\"button\" class=\"song-link setlist-song-link\"><span class=\"setlist-song-title\"></span><span class=\"setlist-song-author\"></span></button><button type=\"button\" class=\"remove-song\" aria-label=\"Remove song from setlist\" title=\"Remove song from setlist\">x</button>"
+            : "<button type=\"button\" class=\"song-link setlist-song-link\"><span class=\"setlist-song-title\"></span><span class=\"setlist-song-author\"></span></button>";
+        row.querySelector(".setlist-song-title").textContent = song.title;
+        row.querySelector(".setlist-song-author").textContent = song.author;
         row.querySelector(".song-link").addEventListener("click", () => {
             setlistModal.hidden = true;
             showSong(song);
