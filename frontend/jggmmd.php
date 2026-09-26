@@ -39,7 +39,7 @@ if (!in_array($profile['role'] ?? '', ['Singer', 'Musician'], true)) {
         </button>
         
         <div class="nav-menu">
-            <button type="button" id="home-nav">Home</button>
+            <button type="button" id="home-nav" aria-current="page">Home</button>
             <div class="nav-dropdown-container">
                 <button type="button" id="songs-nav-toggle" aria-expanded="false">Songs</button>
                 <div class="nav-dropdown" id="songs-nav-menu">
@@ -71,10 +71,12 @@ if (!in_array($profile['role'] ?? '', ['Singer', 'Musician'], true)) {
         <div class="profile-cont">
             <h1>Profile</h1>
             <div class="profile-image-wrap">
-                <img id="profile-image" src="https://static.vecteezy.com/system/resources/previews/026/630/551/non_2x/profile-icon-symbol-design-illustration-vector.jpg" alt="Profile image for <?= htmlspecialchars($profile['username'], ENT_QUOTES) ?>">
-                <div class="profile-image-actions">
-                    <label for="profile-image-input" class="profile-image-button">Change image</label>
-                    <button type="button" class="profile-image-remove" id="profile-image-remove">Remove image</button>
+                <div class="profile-avatar-control">
+                    <img id="profile-image" src="https://static.vecteezy.com/system/resources/previews/026/630/551/non_2x/profile-icon-symbol-design-illustration-vector.jpg" alt="Profile image for <?= htmlspecialchars($profile['username'], ENT_QUOTES) ?>">
+                    <div class="profile-image-actions">
+                        <button type="button" class="profile-image-button" id="profile-image-change" aria-label="Change profile image" title="Change profile image"><img src="../110e9b56-8fcf-4719-b758-255e9177b853_removalai_preview-removebg-preview.png" alt=""></button>
+                        <button type="button" class="profile-image-remove" id="profile-image-remove" aria-label="Remove profile image" title="Remove profile image"><span aria-hidden="true">&times;</span></button>
+                    </div>
                 </div>
                 <input type="file" id="profile-image-input" accept="image/*" hidden>
             </div>
@@ -129,14 +131,6 @@ if (!in_array($profile['role'] ?? '', ['Singer', 'Musician'], true)) {
         </div>
     
         <div class="sbody">
-        
-            <div class="s-bar">
-                <label class="search-field">
-                    <input type="search" id="song-search" placeholder="Search for Title / Author" aria-label="Search songs">
-                    <img class="search-icon" src="https://img.icons8.com/fluent-systems-regular/1200/search.jpg" alt="" aria-hidden="true">
-                </label>
-            </div>
-
             <div id="song-results" aria-live="polite"></div>
 
             <div class="song-editor" id="song-editor" hidden>
@@ -228,26 +222,33 @@ if (!in_array($profile['role'] ?? '', ['Singer', 'Musician'], true)) {
 
             <div class="hero">
                 <div class="setlist-toolbar">
-                    <div>
-                        <h2><?= $isSinger ? 'My setlists' : 'Singer setlists' ?></h2>
-                        <p><?= $isSinger ? 'Select a setlist to manage its songs.' : 'Select a setlist to view its songs.' ?></p>
+                    <div class="setlist-toolbar-main">
+                        <div class="setlist-heading-copy">
+                            <h2><?= $isSinger ? 'My setlists' : 'Singer setlists' ?></h2>
+                            <p><?= $isSinger ? 'Select a setlist to manage its songs.' : 'Select a setlist to view its songs.' ?></p>
+                        </div>
+                        <label class="search-field setlist-search">
+                            <input type="search" id="song-search" placeholder="Search by title or author" aria-label="Search songs">
+                            <img class="search-icon" src="https://img.icons8.com/fluent-systems-regular/1200/search.jpg" alt="" aria-hidden="true">
+                        </label>
                     </div>
                     <div class="dashboard-stats" aria-label="Dashboard statistics">
-                        <div class="stat-card"><span>Total songs</span><strong id="stat-total-songs">0</strong></div>
-                        <div class="stat-card"><span>Active setlists</span><strong id="stat-active-setlists">0</strong></div>
-                        <div class="stat-card"><span>Songs in rotation</span><strong id="stat-rotation">0</strong></div>
+                        <div class="stat-card"><strong id="stat-total-songs">0</strong><span>Total songs</span></div>
+                        <div class="stat-card"><strong id="stat-active-setlists">0</strong><span>Active setlists</span></div>
+                        <div class="stat-card"><strong id="stat-rotation">0</strong><span>Songs in rotation</span></div>
                     </div>
                     <button type="button" id="new-setlist">+ New setlist</button>
                 </div>
                 <div class="dashboard-lower">
                     <div class="setlist-container" id="setlist-container" aria-live="polite"></div>
-                    <aside class="activity-widget" aria-labelledby="activity-title">
-                        <div class="activity-heading"><span class="activity-icon" aria-hidden="true">♫</span><div><p class="widget-eyebrow">Keep the rhythm</p><h3 id="activity-title">Recent activity</h3></div></div>
-                        <ul id="recent-activity"><li class="activity-empty">Your recent song activity will appear here.</li></ul>
-                    </aside>
                 </div>
             </div>
         </div>
+
+        <aside class="activity-widget" aria-labelledby="activity-title">
+            <div class="activity-heading"><span class="activity-icon" aria-hidden="true">♫</span><div><p class="widget-eyebrow">Keep the rhythm</p><h3 id="activity-title">Recent activity</h3></div></div>
+            <ul id="recent-activity"><li class="activity-empty">Your recent song activity will appear here.</li></ul>
+        </aside>
 
         
                        
