@@ -176,17 +176,15 @@ body::before {
     grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
     gap: 22px;
     margin: 0 -14px 4px;
-    padding: 1px 14px;
-    background: rgb(255 240 235 / 96%);;
+    padding: 9px 14px 8px;
+    background: rgb(255 240 235 / 96%);
     border-bottom: 1px solid var(--border-color);
     color: var(--muted-color);
     font-size: 0.68rem;
     font-weight: 700;
     letter-spacing: 0.12em;
-    line-height: 1.1;
     text-transform: uppercase;
 }
-.song-list-header[hidden] { display: none !important; }
 .setlist-song { border-bottom: 1px solid rgb(239 212 208 / 65%); }
 .setlist-song:last-child { border-bottom: 0; }
 .setlist-song-link { border-radius: 8px; }
@@ -214,6 +212,7 @@ body::before {
 @media (max-width: 450px) {
     .song-list-header, .setlist-song-link { grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr); gap: 12px; }
 }
+<<<<<<< HEAD
 
 body {
     position: relative;
@@ -438,6 +437,8 @@ body::after {
 @media (prefers-reduced-motion: reduce) {
     .equalizer span { animation: none; }
 }
+=======
+>>>>>>> parent of 5cc2cc3 (redesign)
 .container {
     min-height: 100vh;
     margin: 0 15px;
@@ -1525,7 +1526,8 @@ body::after {
     box-shadow: 0 4px 12px rgb(59 31 63 / 6%);
 }
 
-.sbody .s-bar .search-field:focus-within {
+.sbody .s-bar .search-field:focus-within,
+.song-library-search:focus-within {
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgb(155 106 169 / 18%);
 }
@@ -1636,6 +1638,7 @@ body::after {
 
 .song-editor input:focus,
 .song-editor textarea:focus,
+.song-library-search input:focus,
 .setlist-rename-form input:focus,
 .setlist-modal-content > input:focus,
 .account-modal-content input:focus {
@@ -1660,6 +1663,7 @@ body::after {
     .song-library-search { width: 100%; max-width: none; }
 }
 
+<<<<<<< HEAD
 .dashboard-lower .setlist-container {
     height: min(560px, calc(100vh - 320px));
     min-height: 260px;
@@ -2054,5 +2058,7 @@ body::after {
     }
 }
 
+=======
+>>>>>>> parent of 5cc2cc3 (redesign)
 
 
