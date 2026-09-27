@@ -130,8 +130,6 @@ if (!in_array($profile['role'] ?? '', ['Singer', 'Musician'], true)) {
     
         <div class="sbody">
         
-<<<<<<< HEAD
-=======
             <div class="s-bar">
                 <label class="search-field">
                     <input type="search" id="song-search" placeholder="Search for Title / Author" aria-label="Search songs">
@@ -141,7 +139,6 @@ if (!in_array($profile['role'] ?? '', ['Singer', 'Musician'], true)) {
 
             <div id="song-results" aria-live="polite"></div>
 
->>>>>>> parent of b00c2b5 (exp)
             <div class="song-editor" id="song-editor" hidden>
                 <form id="song-editor-form">
                     <h2 id="song-editor-title">Add song</h2>
@@ -231,17 +228,11 @@ if (!in_array($profile['role'] ?? '', ['Singer', 'Musician'], true)) {
 
             <div class="hero">
                 <div class="setlist-toolbar">
-<<<<<<< HEAD
-                    <div class="setlist-title-group">
+                    <div>
                         <h2><?= $isSinger ? 'My setlists' : 'Singer setlists' ?></h2>
                         <p><?= $isSinger ? 'Select a setlist to manage its songs.' : 'Select a setlist to view its songs.' ?></p>
-                        <label class="search-field">
-                            <input type="search" id="song-search" placeholder="Search for Title / Author" aria-label="Search songs">
-                            <img class="search-icon" src="https://img.icons8.com/fluent-systems-regular/1200/search.jpg" alt="" aria-hidden="true">
-                        </label>
                     </div>
 
-=======
                     <div>
                         <h2><?= $isSinger ? 'My setlists' : 'Singer setlists' ?></h2>
                         <p><?= $isSinger ? 'Select a setlist to manage its songs.' : 'Select a setlist to view its songs.' ?></p>
@@ -260,7 +251,6 @@ if (!in_array($profile['role'] ?? '', ['Singer', 'Musician'], true)) {
                         <ul id="recent-activity"><li class="activity-empty">Your recent song activity will appear here.</li></ul>
                     </aside>
                 </div>
->>>>>>> parent of b00c2b5 (exp)
             </div>
         </div>
 
