@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Libre+Baskerville:wght@700&display=swap");
 
 :root {
     --primary-color: #176b68;
@@ -34,6 +34,10 @@ body {
     line-height: 1.5;
 }
 
+h1, h2, h3, .navbar h1, .navbar h2 {
+    font-family: "Libre Baskerville", serif;
+}
+
 .navbar {
     position: sticky;
     top: 0;
@@ -57,6 +61,8 @@ body {
 }
 
 
+
+/* Warm studio palette and dashboard polish */
 :root {
     --primary-color: #c65f78;
     --secondary-color: #e9aa9d;
@@ -65,7 +71,7 @@ body {
     --surface-color: #fffdfb;
     --text-color: #392936;
     --input-boxes: #fff0eb;
-    --muted-color: #604653;
+    --muted-color: #836875;
     --border-color: #efd4d0;
     --accent-plum: #60384f;
     --accent-lavender: #f8e2e5;
@@ -163,7 +169,8 @@ body::before {
     background: rgb(255 253 251 / 88%);
 }
 .song-list-header {
-    position: static;
+    position: sticky;
+    top: 0;
     z-index: 1;
     display: grid;
     grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
@@ -372,7 +379,7 @@ body::after {
     box-shadow: 0 8px 18px rgb(117 62 78 / 7%);
 }
 .stat-card span { display: block; color: var(--muted-color); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
-.stat-card strong { display: block; margin-top: 2px; color: var(--accent-plum); font-size: 1.25rem; }
+.stat-card strong { display: block; margin-top: 2px; color: var(--accent-plum); font-family: "Libre Baskerville", serif; font-size: 1.25rem; }
 .dashboard-lower {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(220px, 0.32fr);
@@ -747,7 +754,8 @@ body::after {
 }
 
 .setlist-heading {
-    position: relative;
+    position: sticky;
+    top: 0;
     z-index: 1;
     flex: 0 0 auto;
     padding: 15px;
@@ -805,8 +813,8 @@ body::after {
     gap: 6px;
     margin: 0;
     padding: 12px 15px 15px;
-    overflow: visible;
-    overscroll-behavior: auto;
+    overflow-y: auto;
+    overscroll-behavior: contain;
 }
 .setlist-song { display: grid; grid-template-columns: minmax(0, 1fr) auto; justify-content: stretch; align-items: center; gap: 10px; }
 .setlist-song-title,
@@ -1552,8 +1560,7 @@ body::after {
 
 .sbody .hero .setlist-container .setlist-items {
     width: calc(50% - 10px);
-    height: auto;
-    min-height: 0;
+    height: 280px;
     max-width: none;
     padding: 0;
     border: 1px solid var(--border-color);
@@ -1635,7 +1642,7 @@ body::after {
     .sbody .s-bar { padding: 20px 18px 8px; }
     .sbody .hero { padding: 16px 18px 28px; }
     .setlist-toolbar { padding-bottom: 16px; }
-    .sbody .hero .setlist-container .setlist-items { width: 100%; height: auto; min-height: 0; }
+    .sbody .hero .setlist-container .setlist-items { width: 100%; height: 230px; min-height: 210px; }
 }
 
 @media (max-width: 450px) {
@@ -1685,3 +1692,9 @@ body::after {
         min-height: 220px;
     }
 }
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> parent of 305c9e6 (redesign)
