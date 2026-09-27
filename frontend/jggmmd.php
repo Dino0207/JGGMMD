@@ -232,11 +232,6 @@ if (!in_array($profile['role'] ?? '', ['Singer', 'Musician'], true)) {
                         <h2><?= $isSinger ? 'My setlists' : 'Singer setlists' ?></h2>
                         <p><?= $isSinger ? 'Select a setlist to manage its songs.' : 'Select a setlist to view its songs.' ?></p>
                     </div>
-
-                    <div>
-                        <h2><?= $isSinger ? 'My setlists' : 'Singer setlists' ?></h2>
-                        <p><?= $isSinger ? 'Select a setlist to manage its songs.' : 'Select a setlist to view its songs.' ?></p>
-                    </div>
                     <div class="dashboard-stats" aria-label="Dashboard statistics">
                         <div class="stat-card"><span>Total songs</span><strong id="stat-total-songs">0</strong></div>
                         <div class="stat-card"><span>Active setlists</span><strong id="stat-active-setlists">0</strong></div>

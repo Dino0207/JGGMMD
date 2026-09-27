@@ -126,7 +126,6 @@ function renderSetlists(setlists) {
         card.innerHTML = `<div class="setlist-heading"><div><h3></h3><p class="setlist-owner"></p></div><div class="setlist-heading-actions"><span class="setlist-hint">Click to ${isSinger ? "Manage" : "View"}</span>${isSinger ? '<button type="button" class="setlist-edit" aria-label="Edit setlist" title="Edit setlist">&#9998;</button>' : '<button type="button" class="setlist-view" aria-label="View setlist" title="View setlist">&#128065;</button>'}</div></div><div class="song-list-header" aria-hidden="true"><span>Title</span><span>Author</span></div><div class="setlist-songs"></div>`;
         card.querySelector("h3").textContent = setlist.name;
         card.querySelector(".setlist-owner").textContent = `Made by ${setlist.username}`;
-        card.querySelector(".setlist-view-count").textContent = formatSetlistViewCount(setlist.view_count);
         const editSetlistButton = card.querySelector(".setlist-edit");
         if (editSetlistButton) editSetlistButton.addEventListener("click", event => {
             event.stopPropagation();
@@ -210,28 +209,6 @@ function openSetlistModal(setlistId) {
     setlistSongSearch.value = "";
     setlistSongResults.replaceChildren();
     setlistModal.hidden = false;
-    if (!isSinger) {
-        recordSetlistView(setlistId).catch(error => console.error("Unable to record setlist view:", error));
-    }
-}
-
-function formatSetlistViewCount(viewCount) {
-    const count = Number(viewCount) || 0;
-    return `${count} ${count === 1 ? "view" : "views"}`;
-}
-
-async function recordSetlistView(setlistId) {
-    const response = await fetch("../backend/setlists.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "view", setlist_id: setlistId })
-    });
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(data.error || "Unable to record setlist view.");
-
-    const card = Array.from(setlistContainer.children).find(item => Number(item.dataset.setlistId) === Number(setlistId));
-    const viewCount = card?.querySelector(".setlist-view-count");
-    if (viewCount) viewCount.textContent = formatSetlistViewCount(data.view_count);
 }
 
 function renderSetlistModalSongs() {

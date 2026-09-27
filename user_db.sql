@@ -76,18 +76,6 @@ CREATE TABLE `setlist_songs` (
   `position` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `setlist_views`
---
-
-CREATE TABLE `setlist_views` (
-  `setlist_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `viewed_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
 --
 -- Dumping data for table `setlist_songs`
 --
@@ -145,12 +133,6 @@ ALTER TABLE `setlists`
 --
 ALTER TABLE `setlist_songs`
   ADD PRIMARY KEY (`setlist_id`,`song_id`);
-
---
--- Indexes for table `setlist_views`
---
-ALTER TABLE `setlist_views`
-  ADD PRIMARY KEY (`setlist_id`,`user_id`);
 
 --
 -- Indexes for table `users`
