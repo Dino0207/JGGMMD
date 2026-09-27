@@ -46,7 +46,6 @@ const accountModalTitle = document.getElementById("account-modal-title");
 const accountMessage = document.getElementById("account-message");
 const profileImage = document.getElementById("profile-image");
 const profileImageInput = document.getElementById("profile-image-input");
-const profileImageChange = document.getElementById("profile-image-change");
 const profileImageRemove = document.getElementById("profile-image-remove");
 const profileImageMessage = document.getElementById("profile-image-message");
 const profileCropModal = document.getElementById("profile-crop-modal");
@@ -71,10 +70,6 @@ let songEditorMode = "add";
 let activeSetlist = null;
 let activeSongId = null;
 const isSinger = document.body.dataset.role === "singer";
-
-if (profileImageChange && profileImageInput) {
-    profileImageChange.addEventListener("click", () => profileImageInput.click());
-}
 
 function showSong(song) {
     songModalTitle.textContent = song.title;
@@ -128,8 +123,12 @@ function renderSetlists(setlists) {
     setlists.forEach(setlist => {
         const card = document.createElement("article");
         card.className = "setlist-items";
+<<<<<<< HEAD
         card.dataset.setlistId = setlist.id;
         card.innerHTML = `<div class="setlist-heading"><div><h3></h3><p class="setlist-owner"></p></div><div class="setlist-heading-actions"><span class="setlist-hint">Click to ${isSinger ? "Manage" : "View"}</span>${isSinger ? '<button type="button" class="setlist-edit" aria-label="Edit setlist" title="Edit setlist">&#9998;</button>' : '<button type="button" class="setlist-view" aria-label="View setlist" title="View setlist">&#128065;</button>'}</div></div><div class="song-list-header" aria-hidden="true"><span>Title</span><span>Author</span></div><div class="setlist-songs"></div><footer class="setlist-card-footer"><span class="setlist-view-icon" aria-hidden="true">&#128065;</span><span class="setlist-view-count"></span></footer>`;
+=======
+        card.innerHTML = `<div class="setlist-heading"><div><h3></h3><p class="setlist-owner"></p></div><div class="setlist-heading-actions"><span class="setlist-hint">Click to ${isSinger ? "Manage" : "View"}</span>${isSinger ? '<button type="button" class="setlist-edit" aria-label="Edit setlist" title="Edit setlist">&#9998;</button>' : '<button type="button" class="setlist-view" aria-label="View setlist" title="View setlist">&#128065;</button>'}</div></div><div class="song-list-header" aria-hidden="true"><span>Title</span><span>Author</span></div><div class="setlist-songs"></div>`;
+>>>>>>> parent of b00c2b5 (exp)
         card.querySelector("h3").textContent = setlist.name;
         card.querySelector(".setlist-owner").textContent = `Made by ${setlist.username}`;
         card.querySelector(".setlist-view-count").textContent = formatSetlistViewCount(setlist.view_count);
@@ -146,6 +145,7 @@ function renderSetlists(setlists) {
         const songs = card.querySelector(".setlist-songs");
         if (!setlist.songs.length) {
             card.querySelector(".song-list-header").hidden = true;
+<<<<<<< HEAD
             songs.innerHTML = isSinger
                 ? "<div class=\"empty-setlist-state\"><p class=\"empty-setlist-songs\">No songs in this setlist.</p><button type=\"button\" class=\"empty-setlist-add\" aria-label=\"Add songs\" title=\"Add songs\">+</button></div>"
                 : "<p class=\"empty-setlist-songs\">No songs in this setlist.</p>";
@@ -155,6 +155,9 @@ function renderSetlists(setlists) {
                 openSetlistModal(setlist.id);
                 if (setlistSongSearch) setlistSongSearch.focus();
             });
+=======
+            songs.innerHTML = "<p class=\"empty-setlist-songs\">No songs in this setlist.</p>";
+>>>>>>> parent of b00c2b5 (exp)
         }
         setlist.songs.forEach(song => {
             const row = document.createElement("div");

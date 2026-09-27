@@ -399,17 +399,6 @@ body::after {
 #recent-activity small { color: var(--muted-color); font-size: 0.76rem; }
 .activity-empty { color: var(--muted-color); font-size: 0.84rem; }
 
-.visually-hidden {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-}
-
 @media (max-width: 960px) {
     .dashboard-stats { grid-column: 1 / -1; grid-row: 2; margin-left: 0; }
     .setlist-toolbar { flex-wrap: wrap; }
@@ -536,7 +525,7 @@ body::after {
 }
 
 .mbody {
-    min-height: calc(100vh);
+    min-height: calc(100vh - 72px);
     width: 100%;
     display: flex;
 }
@@ -1657,12 +1646,13 @@ body::after {
 }
 
 .dashboard-lower .setlist-container {
-    height: auto;
-    min-height: 0;
-    overflow: visible;
+    height: min(560px, calc(100vh - 320px));
+    min-height: 260px;
+    overflow-y: auto;
+    overflow-x: hidden;
     align-content: start;
-    overscroll-behavior: auto;
-    scrollbar-gutter: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
 }
 
 .setlist-items > .song-list-header,
@@ -1683,176 +1673,15 @@ body::after {
     flex: 0 0 24px;
 }
 
-.setlist-toolbar {
-    position: static;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto auto;
-    align-items: center;
-    overflow: visible;
-}
-.setlist-toolbar > div { min-width: 0; }
-.setlist-title-group {
-    display: grid;
-    grid-template-columns: auto minmax(220px, 360px);
-    align-items: center;
-    column-gap: 22px;
-    min-width: 0;
-}
-.setlist-title-group h2,
-.setlist-title-group > p { grid-column: 1; }
-.setlist-title-group .search-field {
-    grid-column: 2;
-    grid-row: 1 / span 2;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    width: 100%;
-    padding: 0 12px;
-    border: 1px solid var(--border-color);
-    border-radius: 24px;
-    background: var(--surface-color);
-    box-shadow: 0 4px 12px rgb(59 31 63 / 6%);
-}
-.setlist-title-group .search-field input[type="search"] {
-    width: 100%;
-    min-width: 0;
-    padding: 10px 0;
-    border: 0;
-    outline: 0;
-    background: transparent;
-    color: var(--text-color);
-    font: inherit;
-}
-.setlist-title-group .search-field:focus-within {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgb(198 95 120 / 18%);
-}
-.setlist-title-group .search-icon { width: 21px; height: 21px; object-fit: contain; }
-.dashboard-lower .setlist-container {
-    height: auto;
-    min-height: 0;
-    overflow: visible;
-    overscroll-behavior: auto;
-    scrollbar-gutter: auto;
-}
-.sbody .hero .setlist-container { overflow: visible; }
-.sbody .hero .setlist-container .setlist-items {
-    position: relative;
-    height: 280px;
-    min-height: 280px;
-}
-.setlist-songs {
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    scrollbar-gutter: stable;
-}
-.setlist-card-footer {
-    display: flex;
-    flex: 0 0 32px;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 6px;
-    min-height: 32px;
-    padding: 4px 12px;
-    border-top: 1px solid var(--border-color);
-    color: var(--muted-color);
-    font-size: 0.75rem;
-}
-.setlist-view-icon { font-size: 1rem; line-height: 1; }
-.setlist-song-author { opacity: 1; }
-.empty-setlist-songs { color: var(--muted-color); opacity: 1; }
-.song-list-header { color: var(--muted-color); }
-.activity-widget .widget-eyebrow { color: var(--third-color); }
-.stat-card strong { font-family: inherit; }
-.empty-setlist-state {
-    display: grid;
-    min-height: 100%;
-    place-items: center;
-    padding: 10px 54px;
-    text-align: center;
-}
-.empty-setlist-add {
-    position: absolute;
-    right: 12px;
-    bottom: 44px;
-    display: grid;
-    width: 40px;
-    height: 40px;
-    place-items: center;
-    padding: 0;
-    border: 1px solid var(--primary-color);
-    border-radius: 50%;
-    background: transparent;
-    color: var(--primary-color);
-    cursor: pointer;
-    font: inherit;
-    font-size: 1.6rem;
-    line-height: 1;
-    transition: background-color 160ms ease, color 160ms ease;
-}
-.empty-setlist-add:hover { background: var(--primary-color); color: #ffffff; }
-.empty-setlist-add:focus-visible { outline: 3px solid rgb(159 64 93 / 35%); outline-offset: 2px; }
-
-@media (min-width: 961px) and (max-width: 1440px) {
-    .setlist-toolbar {
-        grid-template-columns: minmax(0, 1fr) auto;
-        column-gap: 20px;
-        row-gap: 12px;
-    }
-    .setlist-title-group { grid-column: 1; grid-row: 1; }
-    .dashboard-stats {
-        grid-column: 1 / -1;
-        grid-row: 2;
-        width: 100%;
-        margin-left: 0;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-    #new-setlist { grid-column: 2; grid-row: 1; justify-self: end; }
-}
-
 @media (max-width: 960px) {
-    .setlist-toolbar { grid-template-columns: minmax(0, 1fr) auto; }
-    .setlist-title-group { grid-template-columns: minmax(0, 1fr); row-gap: 8px; }
-    .setlist-title-group h2,
-    .setlist-title-group > p,
-    .setlist-title-group .search-field { grid-column: 1; }
-    .setlist-title-group h2 { grid-row: 1; }
-    .setlist-title-group > p { grid-row: 2; }
-    .setlist-title-group .search-field { grid-row: 3; max-width: 440px; }
+    .dashboard-lower .setlist-container {
+        height: min(520px, calc(100vh - 270px));
+    }
 }
 
 @media (max-width: 700px) {
-    .setlist-title-group { width: 100%; }
-    .setlist-title-group .search-field { max-width: none; }
-}
-
-@media (max-width: 450px) {
-    .setlist-toolbar { grid-template-columns: minmax(0, 1fr); }
-    .setlist-toolbar > button { width: 100%; }
-}
-
-.setlist-title-group .search-field input[type="search"]::placeholder {
-    color: var(--muted-color);
-    opacity: 1;
-}
-
-@media (min-width: 761px) {
-    .mbody { overflow: clip; }
-    .profile-cont {
-        position: sticky;
-        top: 74px;
-        align-self: flex-start;
-        height: calc(100vh - 74px);
-        min-height: 0;
-        overflow-y: auto;
-        overscroll-behavior: contain;
-    }
-}
-
-@media (max-width: 760px) {
-    .profile-cont {
-        position: static;
-        height: auto;
-        overflow: visible;
+    .dashboard-lower .setlist-container {
+        height: min(500px, calc(100vh - 250px));
+        min-height: 220px;
     }
 }
