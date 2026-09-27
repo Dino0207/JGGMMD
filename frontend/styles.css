@@ -205,7 +205,6 @@ body::before {
 @media (max-width: 450px) {
     .song-list-header, .setlist-song-link { grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr); gap: 12px; }
 }
-<<<<<<< HEAD
 
 body {
     position: relative;
@@ -419,8 +418,6 @@ body::after {
 @media (prefers-reduced-motion: reduce) {
     .equalizer span { animation: none; }
 }
-=======
->>>>>>> parent of 5cc2cc3 (redesign)
 .container {
     min-height: 100vh;
     margin: 0 15px;
