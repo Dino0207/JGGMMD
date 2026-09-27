@@ -33,10 +33,6 @@ const setlistNameInput = document.getElementById("setlist-name");
 const setlistModalSongs = document.getElementById("setlist-modal-songs");
 const setlistSongSearch = document.getElementById("setlist-song-search");
 const setlistSongResults = document.getElementById("setlist-song-results");
-const statTotalSongs = document.getElementById("stat-total-songs");
-const statActiveSetlists = document.getElementById("stat-active-setlists");
-const statRotation = document.getElementById("stat-rotation");
-const recentActivity = document.getElementById("recent-activity");
 const deleteSetlistButton = document.getElementById("delete-setlist");
 const songsNavToggle = document.getElementById("songs-nav-toggle");
 const songsNavMenu = document.getElementById("songs-nav-menu");
@@ -50,6 +46,7 @@ const accountModalTitle = document.getElementById("account-modal-title");
 const accountMessage = document.getElementById("account-message");
 const profileImage = document.getElementById("profile-image");
 const profileImageInput = document.getElementById("profile-image-input");
+const profileImageChange = document.getElementById("profile-image-change");
 const profileImageRemove = document.getElementById("profile-image-remove");
 const profileImageMessage = document.getElementById("profile-image-message");
 const profileCropModal = document.getElementById("profile-crop-modal");
@@ -74,6 +71,10 @@ let songEditorMode = "add";
 let activeSetlist = null;
 let activeSongId = null;
 const isSinger = document.body.dataset.role === "singer";
+
+if (profileImageChange && profileImageInput) {
+    profileImageChange.addEventListener("click", () => profileImageInput.click());
+}
 
 function showSong(song) {
     songModalTitle.textContent = song.title;
@@ -105,7 +106,6 @@ async function updateSetlists(method = "GET", body = {}) {
     const data = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(data.error || "Setlist request failed");
     loadedSetlists = data;
-    updateDashboardWidgets(data);
     renderSetlists(data);
     if (setlistModal && !setlistModal.hidden && activeSetlist) {
         activeSetlist = loadedSetlists.find(setlist => Number(setlist.id) === Number(activeSetlist.id)) || null;
@@ -115,28 +115,6 @@ async function updateSetlists(method = "GET", body = {}) {
             renderSetlistModalSongs();
         }
     }
-}
-
-function updateDashboardWidgets(setlists) {
-    const songs = setlists.flatMap(setlist => setlist.songs || []);
-    const uniqueSongs = new Map(songs.map(song => [song.id || `${song.title}-${song.author}`, song]));
-    if (statTotalSongs) statTotalSongs.textContent = uniqueSongs.size;
-    if (statActiveSetlists) statActiveSetlists.textContent = setlists.length;
-    if (statRotation) statRotation.textContent = songs.length;
-    if (!recentActivity) return;
-    recentActivity.replaceChildren();
-    const activity = songs.slice(0, 5);
-    if (!activity.length) {
-        recentActivity.innerHTML = '<li class="activity-empty">Add songs to a setlist to build your rotation.</li>';
-        return;
-    }
-    activity.forEach(song => {
-        const item = document.createElement("li");
-        item.innerHTML = "<span class=\"activity-dot\"></span><div><strong></strong><small></small></div>";
-        item.querySelector("strong").textContent = song.title;
-        item.querySelector("small").textContent = song.author || "Unknown author";
-        recentActivity.appendChild(item);
-    });
 }
 
 function renderSetlists(setlists) {
@@ -196,13 +174,11 @@ function renderSetlists(setlists) {
 }
 
 if (!isSinger) {
-    if (newSetlistButton) newSetlistButton.hidden = true;
+    newSetlistButton.hidden = true;
     if (setlistRenameForm) setlistRenameForm.hidden = true;
     if (deleteSetlistButton) deleteSetlistButton.hidden = true;
-    if (setlistModal) {
-        const setlistSongLabel = setlistModal.querySelector('label[for="setlist-song-search"]');
-        if (setlistSongLabel) setlistSongLabel.hidden = true;
-    }
+    const setlistSongLabel = setlistModal.querySelector('label[for="setlist-song-search"]');
+    if (setlistSongLabel) setlistSongLabel.hidden = true;
     if (setlistSongSearch) setlistSongSearch.hidden = true;
     if (setlistSongResults) setlistSongResults.hidden = true;
 }
