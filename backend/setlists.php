@@ -27,6 +27,14 @@ $conn->query(
         PRIMARY KEY (setlist_id, song_id)
     ) ENGINE=InnoDB'
 );
+$conn->query(
+    'CREATE TABLE IF NOT EXISTS setlist_views (
+        setlist_id INT NOT NULL,
+        user_id INT NOT NULL,
+        viewed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (setlist_id, user_id)
+    ) ENGINE=InnoDB'
+);
 
 $userQuery = $conn->prepare('SELECT id, username, role FROM users WHERE username = ? LIMIT 1');
 $userQuery->bind_param('s', $_SESSION['username']);
@@ -60,6 +68,7 @@ function getSetlists(mysqli $conn, int $userId, bool $isSinger): array
     $scope = $isSinger ? 's.user_id = ?' : "u.role = 'Singer'";
     $query = $conn->prepare(
         "SELECT s.id, s.name, u.username AS username,
+            (SELECT COUNT(*) FROM setlist_views v WHERE v.setlist_id = s.id) AS view_count,
                 ls.song_id, ls.position, l.title, l.author, l.lyrics
          FROM setlists s
          JOIN users u ON u.id = s.user_id
@@ -81,6 +90,7 @@ function getSetlists(mysqli $conn, int $userId, bool $isSinger): array
                 'id' => $id,
                 'name' => $row['name'],
                 'username' => $row['username'],
+                'view_count' => (int) $row['view_count'],
                 'songs' => []
             ];
         }
@@ -106,6 +116,33 @@ try {
     }
 
     if ($method === 'POST') {
+        if (($body['action'] ?? '') === 'view') {
+            if ($isSinger) {
+                throw new RuntimeException('Only musicians can record setlist views.');
+            }
+            $setlistId = (int) ($body['setlist_id'] ?? 0);
+            $viewableQuery = $conn->prepare(
+                "SELECT s.id FROM setlists s JOIN users owner ON owner.id = s.user_id
+                 WHERE s.id = ? AND owner.role = 'Singer' LIMIT 1"
+            );
+            $viewableQuery->bind_param('i', $setlistId);
+            $viewableQuery->execute();
+            if (!$viewableQuery->get_result()->fetch_assoc()) {
+                throw new RuntimeException('Setlist not found.');
+            }
+
+            $viewQuery = $conn->prepare(
+                'INSERT IGNORE INTO setlist_views (setlist_id, user_id) VALUES (?, ?)'
+            );
+            $viewQuery->bind_param('ii', $setlistId, $userId);
+            $viewQuery->execute();
+
+            $countQuery = $conn->prepare('SELECT COUNT(*) AS view_count FROM setlist_views WHERE setlist_id = ?');
+            $countQuery->bind_param('i', $setlistId);
+            $countQuery->execute();
+            echo json_encode(['view_count' => (int) $countQuery->get_result()->fetch_assoc()['view_count']]);
+            exit;
+        }
         if (!$isSinger) {
             throw new RuntimeException('Musicians can only view setlists.');
         }
@@ -186,6 +223,9 @@ try {
             $query = $conn->prepare('DELETE FROM setlist_songs WHERE setlist_id = ? AND song_id = ?');
             $query->bind_param('ii', $setlistId, $songId);
         } else {
+            $viewsQuery = $conn->prepare('DELETE FROM setlist_views WHERE setlist_id = ?');
+            $viewsQuery->bind_param('i', $setlistId);
+            $viewsQuery->execute();
             $query = $conn->prepare('DELETE FROM setlists WHERE id = ?');
             $query->bind_param('i', $setlistId);
         }

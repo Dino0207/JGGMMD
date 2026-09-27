@@ -130,15 +130,6 @@ if (!in_array($profile['role'] ?? '', ['Singer', 'Musician'], true)) {
     
         <div class="sbody">
         
-            <div class="s-bar">
-                <label class="search-field">
-                    <input type="search" id="song-search" placeholder="Search for Title / Author" aria-label="Search songs">
-                    <img class="search-icon" src="https://img.icons8.com/fluent-systems-regular/1200/search.jpg" alt="" aria-hidden="true">
-                </label>
-            </div>
-
-            <div id="song-results" aria-live="polite"></div>
-
             <div class="song-editor" id="song-editor" hidden>
                 <form id="song-editor-form">
                     <h2 id="song-editor-title">Add song</h2>
@@ -228,9 +219,13 @@ if (!in_array($profile['role'] ?? '', ['Singer', 'Musician'], true)) {
 
             <div class="hero">
                 <div class="setlist-toolbar">
-                    <div>
+                    <div class="setlist-title-group">
                         <h2><?= $isSinger ? 'My setlists' : 'Singer setlists' ?></h2>
                         <p><?= $isSinger ? 'Select a setlist to manage its songs.' : 'Select a setlist to view its songs.' ?></p>
+                        <label class="search-field">
+                            <input type="search" id="song-search" placeholder="Search for Title / Author" aria-label="Search songs">
+                            <img class="search-icon" src="https://img.icons8.com/fluent-systems-regular/1200/search.jpg" alt="" aria-hidden="true">
+                        </label>
                     </div>
                     <div class="dashboard-stats" aria-label="Dashboard statistics">
                         <div class="stat-card"><span>Total songs</span><strong id="stat-total-songs">0</strong></div>
@@ -239,6 +234,7 @@ if (!in_array($profile['role'] ?? '', ['Singer', 'Musician'], true)) {
                     </div>
                     <button type="button" id="new-setlist">+ New setlist</button>
                 </div>
+                <div id="song-results" aria-live="polite"></div>
                 <div class="dashboard-lower">
                     <div class="setlist-container" id="setlist-container" aria-live="polite"></div>
                     <aside class="activity-widget" aria-labelledby="activity-title">
