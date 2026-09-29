@@ -49,7 +49,7 @@ if (!in_array($profile['role'] ?? '', ['Singer', 'Musician'], true)) {
                     <?php else: ?>
                         <button type="button" data-song-action="chords">Add chords</button>
                     <?php endif; ?>
-                    <button type="button" data-song-action="view">Song List</button>
+                    <button type="button" data-song-action="view">Available songs</button>
                 </div>
             </div>
             <button type="button" id="support-nav">Support</button>
@@ -58,6 +58,7 @@ if (!in_array($profile['role'] ?? '', ['Singer', 'Musician'], true)) {
                 <div class="nav-dropdown account-dropdown" id="account-nav-menu">
                     <button type="button" data-account-action="password">Change password</button>
                     <button type="button" data-account-action="email">Change email</button>
+                    <button type="button" data-account-action="delete">Delete account</button>
                     <button type="button" data-account-action="logout">Logout</button>
                 </div>
             </div>
@@ -162,8 +163,8 @@ if (!in_array($profile['role'] ?? '', ['Singer', 'Musician'], true)) {
                     <div class="song-view-toolbar">
                         <h2 id="song-modal-title"></h2>
                         <div class="song-view-toggle" role="group" aria-label="Song view">
-                            <button type="button" class="active" data-song-view="lyrics" aria-pressed="true"><span class="song-view-icon" aria-hidden="true">&#9835;</span>Lyrics</button>
-                            <button type="button" data-song-view="chords" aria-pressed="false"><span class="song-view-icon" aria-hidden="true">&#9833;</span>Chords</button>
+                            <button type="button" class="active" data-song-view="lyrics">Lyrics</button>
+                            <button type="button" data-song-view="chords">Chords</button>
                         </div>
                     </div>
                     <p id="song-modal-author"></p>
@@ -229,23 +230,12 @@ if (!in_array($profile['role'] ?? '', ['Singer', 'Musician'], true)) {
             <div class="hero">
                 <div class="setlist-toolbar">
                     <div>
-                        <h2><?= $isSinger ? 'My setlists' : 'Singer setlists' ?></h2>
-                        <p><?= $isSinger ? 'Select a setlist to manage its songs.' : 'Select a setlist to view its songs.' ?></p>
-                    </div>
-                    <div class="dashboard-stats" aria-label="Dashboard statistics">
-                        <div class="stat-card"><span>Total songs</span><strong id="stat-total-songs">0</strong></div>
-                        <div class="stat-card"><span>Active setlists</span><strong id="stat-active-setlists">0</strong></div>
-                        <div class="stat-card"><span>Songs in rotation</span><strong id="stat-rotation">0</strong></div>
+                        <h2>My setlists</h2>
+                        <p>Select a setlist to manage its songs.</p>
                     </div>
                     <button type="button" id="new-setlist">+ New setlist</button>
                 </div>
-                <div class="dashboard-lower">
-                    <div class="setlist-container" id="setlist-container" aria-live="polite"></div>
-                    <aside class="activity-widget" aria-labelledby="activity-title">
-                        <div class="activity-heading"><span class="activity-icon" aria-hidden="true">♫</span><div><p class="widget-eyebrow">Keep the rhythm</p><h3 id="activity-title">Recent activity</h3></div></div>
-                        <ul id="recent-activity"><li class="activity-empty">Your recent song activity will appear here.</li></ul>
-                    </aside>
-                </div>
+                <div class="setlist-container" id="setlist-container" aria-live="polite"></div>
             </div>
         </div>
 
