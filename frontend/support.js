@@ -83,7 +83,8 @@ if (supportReportForm) {
                 });
                 const analyticsResult = await analyticsResponse.json().catch(() => ({}));
                 if (!analyticsResponse.ok) throw new Error(analyticsResult.error || "Unable to update report analytics.");
-                await loadReportAnalytics();
+                renderReportAnalytics(analyticsResult);
+                supportAnalyticsStatus.textContent = "";
             } catch (error) {
                 supportAnalyticsStatus.textContent = `Your report was sent, but analytics could not be updated: ${error.message}`;
             }

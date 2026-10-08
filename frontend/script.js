@@ -81,6 +81,7 @@ let songLibraryAddSetlistId = null;
 let songLibraryPage = 0;
 let returnToSongLibrary = false;
 let setlistSearchQuery = "";
+let setlistSongObserver = null;
 const SONG_LIBRARY_PAGE_SIZE = 10;
 const isSinger = document.body.dataset.role === "singer";
 
@@ -154,6 +155,17 @@ function updateDashboardWidgets(setlists) {
 
 function renderSetlists(setlists) {
     if (!setlistContainer) return;
+    if (setlistSongObserver) setlistSongObserver.disconnect();
+    setlistSongObserver = "IntersectionObserver" in window
+        ? new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                const card = entry.target;
+                setlistSongObserver.unobserve(card);
+                card.renderSongs();
+            });
+        }, { rootMargin: "250px 0px" })
+        : null;
     setlistContainer.replaceChildren();
     if (!setlists.length) {
         const empty = document.createElement("p");
@@ -184,31 +196,38 @@ function renderSetlists(setlists) {
             openSetlistModal(setlist.id);
         });
         const songs = card.querySelector(".setlist-songs");
-        if (!setlist.songs.length) {
-            card.querySelector(".song-list-header").hidden = true;
-            songs.innerHTML = isSinger
-                ? "<div class=\"empty-setlist-state\"><p class=\"empty-setlist-songs\">No songs in this setlist.</p><button type=\"button\" class=\"empty-setlist-add\" aria-label=\"Add songs\" title=\"Add songs\">+</button></div>"
-                : "<p class=\"empty-setlist-songs\">No songs in this setlist.</p>";
-            const addSongsButton = songs.querySelector(".empty-setlist-add");
-            if (addSongsButton) addSongsButton.addEventListener("click", event => {
-                event.stopPropagation();
-                songLibraryAddSetlistId = setlist.id;
-                loadSongLibrary().then(() => { songLibraryModal.hidden = false; }).catch(error => { songLibraryList.textContent = error.message; });
+        card.renderSongs = () => {
+            if (card.dataset.songsRendered) return;
+            card.dataset.songsRendered = "true";
+            if (!setlist.songs.length) {
+                card.querySelector(".song-list-header").hidden = true;
+                songs.innerHTML = isSinger
+                    ? "<div class=\"empty-setlist-state\"><p class=\"empty-setlist-songs\">No songs in this setlist.</p><button type=\"button\" class=\"empty-setlist-add\" aria-label=\"Add songs\" title=\"Add songs\">+</button></div>"
+                    : "<p class=\"empty-setlist-songs\">No songs in this setlist.</p>";
+                const addSongsButton = songs.querySelector(".empty-setlist-add");
+                if (addSongsButton) addSongsButton.addEventListener("click", event => {
+                    event.stopPropagation();
+                    songLibraryAddSetlistId = setlist.id;
+                    loadSongLibrary().then(() => { songLibraryModal.hidden = false; }).catch(error => { songLibraryList.textContent = error.message; });
+                });
+                return;
+            }
+            setlist.songs.forEach(song => {
+                const row = document.createElement("div");
+                row.className = "setlist-song";
+                row.innerHTML = "<button type=\"button\" class=\"song-link setlist-song-link\"><span class=\"setlist-song-title\"></span><span class=\"setlist-song-author\"></span></button>";
+                row.querySelector(".setlist-song-title").textContent = song.title;
+                row.querySelector(".setlist-song-author").textContent = song.author;
+                row.querySelector(".setlist-song-link").addEventListener("click", event => {
+                    event.stopPropagation();
+                    if (!isSinger) recordSetlistView(setlist.id).catch(error => console.error("Unable to record setlist view:", error));
+                    showSong(song);
+                });
+                songs.appendChild(row);
             });
-        }
-        setlist.songs.forEach(song => {
-            const row = document.createElement("div");
-            row.className = "setlist-song";
-            row.innerHTML = "<button type=\"button\" class=\"song-link setlist-song-link\"><span class=\"setlist-song-title\"></span><span class=\"setlist-song-author\"></span></button>";
-            row.querySelector(".setlist-song-title").textContent = song.title;
-            row.querySelector(".setlist-song-author").textContent = song.author;
-            row.querySelector(".setlist-song-link").addEventListener("click", event => {
-                event.stopPropagation();
-                if (!isSinger) recordSetlistView(setlist.id).catch(error => console.error("Unable to record setlist view:", error));
-                showSong(song);
-            });
-            songs.appendChild(row);
-        });
+        };
+        if (setlistSongObserver) setlistSongObserver.observe(card);
+        else card.renderSongs();
         card.addEventListener("click", () => openSetlistModal(setlist.id));
         setlistContainer.appendChild(card);
     });
