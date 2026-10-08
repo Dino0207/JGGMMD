@@ -172,6 +172,7 @@ if (!in_array($profile['role'] ?? '', ['Singer', 'Musician'], true)) {
                         </label>
                     </div>
                     <div id="song-library-list" class="song-library-list"></div>
+                    <nav id="song-library-pager" class="song-library-pager" aria-label="Song list pages" hidden></nav>
                 </div>
             </div>
 

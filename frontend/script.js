@@ -18,6 +18,7 @@ const songLibraryModal = document.getElementById("song-library-modal");
 const songLibraryClose = document.getElementById("song-library-close");
 const songLibraryList = document.getElementById("song-library-list");
 const songLibrarySearch = document.getElementById("song-library-search");
+const songLibraryPager = document.getElementById("song-library-pager");
 const setlistContainer = document.getElementById("setlist-container");
 const newSetlistButton = document.getElementById("new-setlist");
 const newSetlistModal = document.getElementById("new-setlist-modal");
@@ -73,6 +74,9 @@ let activeSetlistId = null;
 let songEditorMode = "add";
 let activeSetlist = null;
 let activeSongId = null;
+let songLibraryAddSetlistId = null;
+let songLibraryPage = 0;
+const SONG_LIBRARY_PAGE_SIZE = 10;
 const isSinger = document.body.dataset.role === "singer";
 
 function showSong(song) {
@@ -174,8 +178,8 @@ function renderSetlists(setlists) {
             const addSongsButton = songs.querySelector(".empty-setlist-add");
             if (addSongsButton) addSongsButton.addEventListener("click", event => {
                 event.stopPropagation();
-                openSetlistModal(setlist.id);
-                if (setlistSongSearch) setlistSongSearch.focus();
+                songLibraryAddSetlistId = setlist.id;
+                loadSongLibrary().then(() => { songLibraryModal.hidden = false; }).catch(error => { songLibraryList.textContent = error.message; });
             });
         }
         setlist.songs.forEach(song => {
@@ -186,6 +190,7 @@ function renderSetlists(setlists) {
             row.querySelector(".setlist-song-author").textContent = song.author;
             row.querySelector(".setlist-song-link").addEventListener("click", event => {
                 event.stopPropagation();
+                if (!isSinger) recordSetlistView(setlist.id).catch(error => console.error("Unable to record setlist view:", error));
                 showSong(song);
             });
             songs.appendChild(row);
@@ -301,17 +306,49 @@ function renderSetlistModalSongs() {
     });
 }
 
+function renderSongLibraryPager(songs, pageCount) {
+    if (!songLibraryPager) return;
+    songLibraryPager.replaceChildren();
+    songLibraryPager.hidden = pageCount <= 1;
+    if (pageCount <= 1) return;
+
+    const goTo = page => {
+        songLibraryPage = page;
+        renderSongLibrary(songs);
+    };
+    const previous = document.createElement("button");
+    previous.type = "button";
+    previous.textContent = "Previous";
+    previous.disabled = songLibraryPage === 0;
+    previous.addEventListener("click", () => goTo(songLibraryPage - 1));
+    const label = document.createElement("span");
+    label.textContent = `Page ${songLibraryPage + 1} of ${pageCount}`;
+    const next = document.createElement("button");
+    next.type = "button";
+    next.textContent = "Next";
+    next.disabled = songLibraryPage >= pageCount - 1;
+    next.addEventListener("click", () => goTo(songLibraryPage + 1));
+    songLibraryPager.append(previous, label, next);
+}
+
 function renderSongLibrary(songs) {
     songLibraryList.replaceChildren();
+    const pageCount = Math.ceil(songs.length / SONG_LIBRARY_PAGE_SIZE);
+    songLibraryPage = Math.min(songLibraryPage, Math.max(pageCount - 1, 0));
+    renderSongLibraryPager(songs, pageCount);
     if (!songs.length) {
         songLibraryList.innerHTML = "<p>No matching songs found.</p>";
         return;
     }
 
-    songs.forEach(song => {
+    const pageStart = songLibraryPage * SONG_LIBRARY_PAGE_SIZE;
+    songs.slice(pageStart, pageStart + SONG_LIBRARY_PAGE_SIZE).forEach(song => {
         const row = document.createElement("div");
         row.className = "song-library-row";
-        row.innerHTML = isSinger
+        const addTarget = songLibraryAddSetlistId === null ? null : loadedSetlists.find(setlist => Number(setlist.id) === Number(songLibraryAddSetlistId));
+        row.innerHTML = addTarget
+            ? "<button type=\"button\" class=\"song-link\"></button><button type=\"button\" data-song-add>Add</button>"
+            : isSinger
             ? "<button type=\"button\" class=\"song-link\"></button><button type=\"button\" data-song-edit>Edit</button><button type=\"button\" data-song-delete>Delete</button>"
             : "<button type=\"button\" class=\"song-link\"></button><button type=\"button\" data-song-edit>Add chords</button>";
         row.querySelector(".song-link").textContent = `${song.title} - ${song.author}`;
@@ -319,6 +356,23 @@ function renderSongLibrary(songs) {
             songLibraryModal.hidden = true;
             showSong(song);
         });
+        const addButton = row.querySelector("[data-song-add]");
+        if (addButton) {
+            if (addTarget.songs.some(item => Number(item.id) === Number(song.id))) {
+                addButton.textContent = "Added";
+                addButton.disabled = true;
+            } else {
+                addButton.addEventListener("click", () => {
+                    addButton.disabled = true;
+                    updateSetlists("POST", { setlist_id: addTarget.id, song_id: song.id })
+                        .then(() => renderSongLibrary(songs))
+                        .catch(error => {
+                            addButton.disabled = false;
+                            showSetlistError(error);
+                        });
+                });
+            }
+        }
         const editButton = row.querySelector("[data-song-edit]");
         if (editButton) editButton.addEventListener("click", () => {
             songLibraryModal.hidden = true;
@@ -337,6 +391,7 @@ async function loadSongLibrary() {
     const response = await fetch("../backend/search-songs.php?q=");
     if (!response.ok) throw new Error("Unable to load songs.");
     const songs = await response.json();
+    songLibraryPage = 0;
     renderSongLibrary(songs);
     if (songLibrarySearch) {
         songLibrarySearch.value = "";
@@ -588,6 +643,7 @@ if (profileImageInput) {
 
 document.querySelectorAll("[data-song-action]").forEach(button => {
     button.addEventListener("click", () => {
+        songLibraryAddSetlistId = null;
         if (button.dataset.songAction === "view") {
             loadSongLibrary().then(() => { songLibraryModal.hidden = false; }).catch(error => { songLibraryList.textContent = error.message; });
         } else if (button.dataset.songAction === "search") {
@@ -633,6 +689,7 @@ if (songLibrarySearch) {
     songLibrarySearch.addEventListener("input", () => {
         const query = songLibrarySearch.value.trim().toLowerCase();
         const songs = JSON.parse(songLibrarySearch.dataset.songs || "[]");
+        songLibraryPage = 0;
         renderSongLibrary(songs.filter(song => `${song.title} ${song.author}`.toLowerCase().includes(query)));
     });
 }

@@ -1825,3 +1825,80 @@ body::after {
         overflow: visible;
     }
 }
+
+.song-library-content {
+    display: flex;
+    flex-direction: column;
+    height: min(680px, 90vh);
+    overflow: hidden;
+}
+
+.song-library-content .song-library-list {
+    flex: 1 1 auto;
+    align-content: start;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.song-library-pager {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    flex: 0 0 auto;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-color);
+}
+
+.song-library-pager[hidden] { display: none; }
+
+.song-library-pager button {
+    border: 1px solid var(--primary-color);
+    border-radius: 6px;
+    background: var(--surface-color);
+    color: var(--text-color);
+    padding: 8px 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.song-library-pager button:hover:not(:disabled) {
+    background: var(--third-color);
+    color: #ffffff;
+}
+
+.song-library-pager button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+/* Chords view: keep stanzas separated and chords aligned over their words */
+.song-display:not(.lyrics-view) .chord-sheet {
+    line-height: 1.4;
+}
+
+.song-display:not(.lyrics-view) .paragraph {
+    margin-bottom: 1.6em;
+}
+
+.song-display:not(.lyrics-view) .paragraph:last-child {
+    margin-bottom: 0;
+}
+
+.song-display:not(.lyrics-view) table.row {
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin: 0;
+}
+
+.song-display:not(.lyrics-view) table.row td {
+    padding: 0;
+    white-space: pre;
+    vertical-align: bottom;
+}
+
+.song-display:not(.lyrics-view) td.chord {
+    padding-right: 0.5em;
+    height: 1.4em;
+}
