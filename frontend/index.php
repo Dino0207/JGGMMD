@@ -61,7 +61,15 @@
                 <h2>Login</h2>
                 <?= showError($error['login']); ?>
                 <input type="email" name="email" placeholder="Email" required>
-                <input type="password" name="password" placeholder="Password" required>
+                <div class="password-field">
+                    <input id="login-password" type="password" name="password" placeholder="Password" required>
+                    <button type="button" class="password-toggle" data-password-toggle="login-password" aria-label="Show password" aria-pressed="false">
+                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path data-eye-open d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Zm10 4a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" />
+                            <path data-eye-closed d="m3 3 18 18M10.6 10.6a2 2 0 0 0 2.8 2.8M9.9 5.2A10 10 0 0 1 12 5c6.4 0 10 7 10 7a16 16 0 0 1-3.2 3.8M6.2 6.2C3.5 8.1 2 12 2 12s3.6 7 10 7a9.7 9.7 0 0 0 4-.8" />
+                        </svg>
+                    </button>
+                </div>
                 <button type="submit" name="login">Login</button>
                 <p>Don't have an account? <a href="#" onclick="showForm('register-form')">Register</a></p>
             </form>
@@ -73,8 +81,24 @@
                 <?= showError($error['register']);?> <?=showError($error['password']);?><?=showError($error['email']);?>
                 <input type="text" name="username" placeholder="Username" required>
                 <input type="email" name="email" placeholder="Email" required>
-                <input type="password" name="password" placeholder="Password" required>
-                <input type="password" name="cpassword" placeholder="Confirm Password" required>
+                <div class="password-field">
+                    <input id="register-password" type="password" name="password" placeholder="Password" required>
+                    <button type="button" class="password-toggle" data-password-toggle="register-password" aria-label="Show password" aria-pressed="false">
+                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path data-eye-open d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Zm10 4a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" />
+                            <path data-eye-closed d="m3 3 18 18M10.6 10.6a2 2 0 0 0 2.8 2.8M9.9 5.2A10 10 0 0 1 12 5c6.4 0 10 7 10 7a16 16 0 0 1-3.2 3.8M6.2 6.2C3.5 8.1 2 12 2 12s3.6 7 10 7a9.7 9.7 0 0 0 4-.8" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="password-field">
+                    <input id="register-confirm-password" type="password" name="cpassword" placeholder="Confirm Password" required>
+                    <button type="button" class="password-toggle" data-password-toggle="register-confirm-password" aria-label="Show password" aria-pressed="false">
+                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path data-eye-open d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Zm10 4a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" />
+                            <path data-eye-closed d="m3 3 18 18M10.6 10.6a2 2 0 0 0 2.8 2.8M9.9 5.2A10 10 0 0 1 12 5c6.4 0 10 7 10 7a16 16 0 0 1-3.2 3.8M6.2 6.2C3.5 8.1 2 12 2 12s3.6 7 10 7a9.7 9.7 0 0 0 4-.8" />
+                        </svg>
+                    </button>
+                </div>
                 <select name="Role" required>
                     <option value="">--Select Role--</option>
                     <option value="Singer">Singer</option>
@@ -88,6 +112,7 @@
         </main>
     </div>
 
+        <script src="page-motion.js"></script>
         <script src="script.js"></script>
 </body>
 </html>

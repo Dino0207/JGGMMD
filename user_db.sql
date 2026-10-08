@@ -31,7 +31,8 @@ CREATE TABLE `lyrics` (
   `id` int(11) NOT NULL,
   `title` varchar(100) DEFAULT NULL,
   `author` varchar(100) DEFAULT NULL,
-  `lyrics` text DEFAULT NULL
+  `lyrics` text DEFAULT NULL,
+  `date_added` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -86,6 +87,17 @@ CREATE TABLE `setlist_views` (
   `setlist_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `viewed_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `support_report_events`
+--
+
+CREATE TABLE `support_report_events` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `reported_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -153,6 +165,13 @@ ALTER TABLE `setlist_views`
   ADD PRIMARY KEY (`setlist_id`,`user_id`);
 
 --
+-- Indexes for table `support_report_events`
+--
+ALTER TABLE `support_report_events`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_support_report_events_reported_at` (`reported_at`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -180,6 +199,13 @@ ALTER TABLE `setlists`
 --
 ALTER TABLE `users`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+ALTER TABLE `support_report_events`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

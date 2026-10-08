@@ -39,29 +39,11 @@ if (!in_array($profile['role'] ?? '', ['Singer', 'Musician'], true)) {
         </button>
         
         <div class="nav-menu">
-            <button type="button" id="home-nav">Home</button>
-            <div class="nav-dropdown-container">
-                <button type="button" id="songs-nav-toggle" aria-expanded="false">Songs</button>
-                <div class="nav-dropdown" id="songs-nav-menu">
-                    <button type="button" data-song-action="search">Search songs</button>
-                    <?php if ($isSinger): ?>
-                        <button type="button" data-song-action="add">Add song</button>
-                    <?php else: ?>
-                        <button type="button" data-song-action="chords">Add chords</button>
-                    <?php endif; ?>
-                    <button type="button" data-song-action="view">Song List</button>
-                </div>
-            </div>
-            <button type="button" id="support-nav">Support</button>
-            <div class="nav-dropdown-container">
-                <button type="button" id="account-nav" aria-expanded="false">Account</button>
-                <div class="nav-dropdown account-dropdown" id="account-nav-menu">
-                    <button type="button" data-account-action="password">Change password</button>
-                    <button type="button" data-account-action="email">Change email</button>
-                    <button type="button" data-account-action="logout">Logout</button>
-                </div>
-            </div>
-
+            <a href="jggmmd.php" aria-current="page">Home</a>
+            <a href="songs.php">Songs</a>
+            <a id="support-nav" href="support.php">Support</a>
+            <a href="account.php">Account</a>
+            <button type="button" data-nav-logout>Log out</button>
         </div>
        
     </nav>
@@ -104,30 +86,6 @@ if (!in_array($profile['role'] ?? '', ['Singer', 'Musician'], true)) {
             </div>
         </div>
 
-        <div class="account-modal" id="account-modal" hidden>
-            <div class="account-modal-content" role="dialog" aria-modal="true" aria-labelledby="account-modal-title">
-                <button type="button" class="song-modal-close" id="account-modal-close" aria-label="Close account settings">&times;</button>
-                <h2 id="account-modal-title"></h2>
-                <form id="change-password-form" data-account-form="password" hidden>
-                    <label for="current-password">Current password</label>
-                    <input type="password" id="current-password" required>
-                    <label for="new-password">New password</label>
-                    <input type="password" id="new-password" minlength="8" required>
-                    <label for="confirm-password">Confirm new password</label>
-                    <input type="password" id="confirm-password" minlength="8" required>
-                    <button type="submit">Change password</button>
-                </form>
-                <form id="change-email-form" data-account-form="email" hidden>
-                    <label for="new-email">New email</label>
-                    <input type="email" id="new-email" required>
-                    <label for="email-password">Current password</label>
-                    <input type="password" id="email-password" required>
-                    <button type="submit">Change email</button>
-                </form>
-                <p id="account-message" role="status"></p>
-            </div>
-        </div>
-    
         <div class="sbody">
         
             <div class="song-editor" id="song-editor" hidden>
@@ -150,6 +108,7 @@ if (!in_array($profile['role'] ?? '', ['Singer', 'Musician'], true)) {
             <div class="song-modal" id="song-modal" hidden>
                 <div class="song-modal-content" role="dialog" aria-modal="true" aria-labelledby="song-modal-title">
                     <button type="button" class="song-modal-close" id="song-modal-close" aria-label="Close song">&times;</button>
+                    <button type="button" class="song-modal-back" id="song-modal-back" hidden>← Back to song list</button>
                     <div class="song-view-toolbar">
                         <h2 id="song-modal-title"></h2>
                         <div class="song-view-toggle" role="group" aria-label="Song view">
@@ -224,7 +183,7 @@ if (!in_array($profile['role'] ?? '', ['Singer', 'Musician'], true)) {
                         <h2><?= $isSinger ? 'My setlists' : 'Singer setlists' ?></h2>
                         <p><?= $isSinger ? 'Select a setlist to manage its songs.' : 'Select a setlist to view its songs.' ?></p>
                         <label class="search-field">
-                            <input type="search" id="song-search" placeholder="Search for Title / Author" aria-label="Search songs">
+                            <input type="search" id="song-search" placeholder="Search setlists, creators, or songs" aria-label="Search setlists by title, creator, song title, or song author">
                             <img class="search-icon" src="https://img.icons8.com/fluent-systems-regular/1200/search.jpg" alt="" aria-hidden="true">
                         </label>
                     </div>
@@ -235,7 +194,6 @@ if (!in_array($profile['role'] ?? '', ['Singer', 'Musician'], true)) {
                     </div>
                     <button type="button" id="new-setlist">+ New setlist</button>
                 </div>
-                <div id="song-results" aria-live="polite"></div>
                 <div class="dashboard-lower">
                     <div class="setlist-container" id="setlist-container" aria-live="polite"></div>
                     <aside class="activity-widget" aria-labelledby="activity-title">
@@ -253,6 +211,8 @@ if (!in_array($profile['role'] ?? '', ['Singer', 'Musician'], true)) {
 </div>
     <script src="../node_modules/chordsheetjs/lib/bundle.min.js"></script>
     <script type="module" src="chords.js"></script>
+    <script src="page-motion.js"></script>
+    <script src="nav.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
