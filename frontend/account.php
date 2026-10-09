@@ -23,6 +23,25 @@ if (!$profile || !in_array($profile['role'], ['Singer', 'Musician'], true)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account | JGGMMD</title>
+    <style>
+        html {
+            background: #f8f4f0;
+        }
+
+        body {
+            opacity: 0;
+            transition: opacity 0.12s ease-in-out;
+        }
+
+        body.page-ready {
+            opacity: 1;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.body.classList.add('page-ready');
+        });
+    </script>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body data-role="<?= htmlspecialchars(strtolower($profile['role']), ENT_QUOTES) ?>" data-profile-user="<?= htmlspecialchars($profile['username'], ENT_QUOTES) ?>">
